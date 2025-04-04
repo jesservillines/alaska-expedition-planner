@@ -123,7 +123,7 @@ const packingList = {
   ],
   
   specialConsiderations: [
-    "Weight is crucial for fly-in expeditions - air taxis have strict weight limits (typically 85 lbs per person including body weight).",
+    "Weight is crucial for fly-in expeditions - air taxis have strict weight limits (typically 125 lbs per person including body weight).",
     "Temperatures in the Ruth Gorge can drop to -20°F even in spring - gear must be rated appropriately.",
     "The sun can be extremely intense on the glacier - proper eye and skin protection is essential.",
     "Moisture management is critical - ensure sleeping bags and insulating layers stay dry.",

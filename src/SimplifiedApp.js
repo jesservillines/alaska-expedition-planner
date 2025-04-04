@@ -71,7 +71,7 @@ const SimplifiedApp = () => {
                 <ul>
                   <li>Air taxi services: Talkeetna Air Taxi, K2 Aviation</li>
                   <li>Round-trip flights: $650-$750 per person</li>
-                  <li>Weight limit: 85 lbs per person (including body weight)</li>
+                  <li>Weight limit: 125 lbs per person (including body weight)</li>
                   <li>Typical landing zones: Ruth Gorge Basecamp (4,500'), Root Canal (7,200')</li>
                 </ul>
               </CardContent>

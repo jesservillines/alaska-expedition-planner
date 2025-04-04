@@ -14,7 +14,7 @@ const logistics = {
         { name: "Mountain House/Sheldon Amphitheater", elevation: 5600, price: 650, notes: "Popular landing spot in the Ruth Amphitheater, with historic Mountain House shelter" },
         { name: "West Fork Ruth", elevation: 6500, price: 725, notes: "Access to Mt. Wake (Peak 11,300), Huntington, other west side objectives" }
       ],
-      weightLimits: "85 lbs per person (including body weight) - additional costs apply for extra weight",
+      weightLimits: "125 lbs per person (including body weight) - additional costs apply for extra weight",
       specialNotes: "Has caches of white gas available at common basecamps ($25/gallon). Offers sat phone rental."
     },
     {
@@ -28,7 +28,7 @@ const logistics = {
         { name: "Root Canal", elevation: 7200, price: 675, notes: "Access to Moose's Tooth routes" },
         { name: "Pika Glacier/Little Switzerland", elevation: 5800, price: 660, notes: "Southern area with moderate peak objectives" }
       ],
-      weightLimits: "85 lbs per person (including body weight) - excess charges apply",
+      weightLimits: "125 lbs per person (including body weight) - excess charges apply",
       specialNotes: "Offers glacier-to-glacier shuttle flights (e.g. Ruth↔Kahiltna) for approximately $175"
     }
   ],
