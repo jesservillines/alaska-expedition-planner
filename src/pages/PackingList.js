@@ -540,7 +540,7 @@ const PackingList = () => {
               <Divider sx={{ mb: 2 }} />
               
               <Typography variant="body2" paragraph>
-                <strong>Air Taxi Weight Limit:</strong> 85 lbs (38.5kg) per person including body weight.
+                <strong>Air Taxi Weight Limit:</strong> 125 lbs (56.7kg) per person including body weight.
               </Typography>
               
               <Typography variant="body2" paragraph>
