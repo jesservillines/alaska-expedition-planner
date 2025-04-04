@@ -54,9 +54,9 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
   const [showLandingZones, setShowLandingZones] = useState(true);
   const [selectedMarker, setSelectedMarker] = useState(null);
   
-  // Load Google Maps script with explicit API key
+  // Load Google Maps script using environment variable for API key
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyC4z8Np9U2SScB0EIyJc4xJIiXVZUD9JjY",
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "AIzaSyC4z8Np9U2SScB0EIyJc4xJIiXVZUD9JjY", // Fallback for local development
     libraries: ['places'],
   });
 
@@ -109,6 +109,71 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
       default:
         return { lat: 62.9300, lng: -150.1800 };
     }
+  }
+  
+  // Get coordinates for routes based on their peak and landing zone
+  function getRouteCoordinates(route) {
+    // Base coordinates for the major peaks
+    const peakCoordinates = {
+      "Moose's Tooth": { lat: 62.9175, lng: -150.0850 },
+      "Mount Dickey": { lat: 62.9480, lng: -150.1730 },
+      "Mount Barille": { lat: 62.9450, lng: -150.1770 },
+      "Mount Huntington": { lat: 62.9200, lng: -150.2450 },
+      "Mount Wake": { lat: 62.9350, lng: -150.2280 },
+      "London Tower": { lat: 62.9430, lng: -150.1820 },
+      "Mount Bradley": { lat: 62.9380, lng: -150.1650 },
+      "Mount Johnson": { lat: 62.9330, lng: -150.2050 },
+      "The Wisdom Tooth": { lat: 62.9160, lng: -150.0900 },
+      "Mount Dan Beard": { lat: 62.9520, lng: -150.1900 }
+    };
+    
+    // If we have coordinates for the route's peak, use those
+    if (route.peak && peakCoordinates[route.peak]) {
+      // Add a small random offset to prevent routes on the same peak from overlapping exactly
+      const routeIdHash = route.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 100;
+      
+      // Create an offset based on the route ID
+      const latOffset = (routeIdHash % 11 - 5) * 0.0003;
+      const lngOffset = (routeIdHash % 13 - 6) * 0.0003;
+      
+      return {
+        lat: peakCoordinates[route.peak].lat + latOffset,
+        lng: peakCoordinates[route.peak].lng + lngOffset
+      };
+    }
+    
+    // If we have information about the landing zone, use that as a fallback
+    if (route.landingZone) {
+      // Map landing zone names to coordinates directly to avoid circular references
+      const landingZoneMap = {
+        'Root Canal': { lat: 62.9175, lng: -150.0800 },
+        'Ruth Gorge Basecamp': { lat: 62.9470, lng: -150.1700 },
+        'Mountain House': { lat: 62.9200, lng: -150.2400 },
+        'West Fork Ruth': { lat: 62.9350, lng: -150.2250 },
+        'Ruth Glacier': { lat: 62.9450, lng: -150.1750 },
+        'Pika Glacier': { lat: 62.8800, lng: -150.1950 }
+      };
+      
+      // Find the right landing zone coordinates
+      let landingZoneCoords;
+      for (const [key, coords] of Object.entries(landingZoneMap)) {
+        if (route.landingZone.includes(key)) {
+          landingZoneCoords = coords;
+          break;
+        }
+      }
+      
+      // If we found coordinates, use them with an offset
+      if (landingZoneCoords) {
+        return {
+          lat: landingZoneCoords.lat + 0.005,
+          lng: landingZoneCoords.lng + 0.003
+        };
+      }
+    }
+    
+    // Default coordinates for the Ruth Gorge area if we can't determine a better location
+    return { lat: 62.9350, lng: -150.1800 };
   }
 
   // Handle marker click to show info window
@@ -201,14 +266,18 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
   // Get all routes from the routes database for filtering/display
   const allRoutes = useMemo(() => {
     // We need to ensure each route has proper coordinates
-    return routes.map(route => ({
-      ...route,
-      isSelected: selectedRoutes.some(r => r.id === route.id),
-      type: 'route',
-      // Ensure coordinates is properly set
-      coordinates: route.coordinates || { lat: 62.9400, lng: -150.1600 }
-    }));
-  }, [selectedRoutes]);
+    return routes.map(route => {
+      // Get coordinates for this route based on its peak and landing zone
+      const coordinates = getRouteCoordinates(route);
+      
+      return {
+        ...route,
+        isSelected: selectedRoutes.some(r => r.id === route.id),
+        type: 'route',
+        coordinates: coordinates
+      };
+    });
+  }, [selectedRoutes]); // Removed landingZones dependency to avoid circular references
 
   // Handle route selection on the map
   const handleMapRouteSelect = (routeId) => {
@@ -334,21 +403,29 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
               ))}
               
               {/* Display routes */}
-              {routes.map((route) => {
+              {allRoutes.map((route) => {
                 // Get color for the route category
-                const routeColor = getRouteColor(route.category || 'Classic');
+                const routeColor = getRouteColor(route.category || route.classification || 'Classic');
                 
                 // Check if this route is selected for the expedition
                 const isSelected = selectedRoutes.some(r => r.id === route.id);
                 
-                // Create a simple upward path from the starting point
-                // This represents the climbing route direction
+                // Create a visual path for the climbing route - make it point slightly upward
+                // and in the direction of the peak from the landing zone
+                const routeIdHash = route.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 100;
+                
+                // Vary the direction slightly based on the route ID to avoid overlapping lines
+                const angle = (routeIdHash % 60) * (Math.PI / 180); // 0-59 degrees in radians
+                const distance = 0.008; // Length of the line
+                
+                const endPoint = {
+                  lat: route.coordinates.lat + (Math.sin(angle) * distance),
+                  lng: route.coordinates.lng + (Math.cos(angle) * distance)
+                };
+                
                 const routePath = [
                   route.coordinates,
-                  {
-                    lat: route.coordinates.lat + 0.01,
-                    lng: route.coordinates.lng
-                  }
+                  endPoint
                 ];
                 
                 return (
@@ -359,13 +436,13 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
                       icon={{
                         path: window.google.maps.SymbolPath.CIRCLE,
                         fillColor: routeColor,
-                        fillOpacity: 0.9,
-                        strokeWeight: 2,
-                        strokeColor: '#FFFFFF',
-                        scale: 7
+                        fillOpacity: isSelected ? 1.0 : 0.8,
+                        strokeWeight: isSelected ? 3 : 2,
+                        strokeColor: isSelected ? '#FFFFFF' : '#DDDDDD',
+                        scale: isSelected ? 8 : 7
                       }}
                       onClick={() => handleMarkerClick(route)}
-                      zIndex={3}
+                      zIndex={isSelected ? 5 : 3}
                     />
                     
                     {/* Route line */}
@@ -373,8 +450,8 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
                       path={routePath}
                       options={{
                         strokeColor: routeColor,
-                        strokeOpacity: 0.8,
-                        strokeWeight: 3
+                        strokeOpacity: isSelected ? 0.9 : 0.7,
+                        strokeWeight: isSelected ? 4 : 3
                       }}
                     />
                   </React.Fragment>
