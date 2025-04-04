@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import {
   Box,
   Container,
@@ -15,9 +15,10 @@ import {
   Chip,
   Button,
   Grid,
-  useTheme
+  useTheme,
+  CircularProgress
 } from '@mui/material';
-// We're implementing our own map visualization
+import { useLoadScript, GoogleMap, Marker, Polyline, InfoWindow } from '@react-google-maps/api';
 
 import routes from '../data/routes';
 import logistics from '../data/logistics';
@@ -44,7 +45,7 @@ const mapOptions = {
   streetViewControl: false
 };
 
-const ExpeditionMap = ({ selectedRoutes }) => {
+const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
   const theme = useTheme();
   const mapRef = useRef(null);
   
@@ -53,19 +54,44 @@ const ExpeditionMap = ({ selectedRoutes }) => {
   const [showLandingZones, setShowLandingZones] = useState(true);
   const [selectedMarker, setSelectedMarker] = useState(null);
   
-  // Since we don't have a valid Google Maps API key, we'll create a static map visualization
-  const isLoaded = true; // Set to true to show our custom map implementation
+  // Load Google Maps script with explicit API key
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: "AIzaSyC4z8Np9U2SScB0EIyJc4xJIiXVZUD9JjY",
+    libraries: ['places'],
+  });
 
-  // Extract all landing zones from logistics data
+  // Extract all landing zones from logistics data with proper coordinates
   const landingZones = logistics.airTaxis.flatMap(airTaxi => 
     airTaxi.landingZones.map(zone => ({
       ...zone,
       airTaxi: airTaxi.name,
-      coordinates: getLandingZoneCoordinates(zone.name)
+      coordinates: getLandingZoneCoordinates(zone.name),
+      type: 'landingZone',
+      peak: getPeakForLandingZone(zone.name) // Add associated peak info
     }))
   );
 
-  // Sample landing zone coordinates (would need real GPS coordinates in production)
+  // Get nearby peak for landing zones
+  function getPeakForLandingZone(zoneName) {
+    switch(zoneName) {
+      case 'Ruth Gorge Basecamp (Donnelly Landing)':
+        return 'Mount Dickey';
+      case 'Root Canal (Moose\'s Tooth)':
+        return 'Moose\'s Tooth';
+      case 'Mountain House/Sheldon Amphitheater':
+        return 'Mount Huntington';
+      case 'West Fork Ruth':
+        return 'Mount Wake';
+      case 'Ruth Glacier':
+        return 'Mount Barille';
+      case 'Pika Glacier/Little Switzerland':
+        return 'Little Switzerland';
+      default:
+        return 'Ruth Gorge';
+    }
+  }
+
+  // Landing zone coordinates (using accurate coordinate system)
   function getLandingZoneCoordinates(zoneName) {
     switch(zoneName) {
       case 'Ruth Gorge Basecamp (Donnelly Landing)':
@@ -76,6 +102,10 @@ const ExpeditionMap = ({ selectedRoutes }) => {
         return { lat: 62.9200, lng: -150.2400 };
       case 'West Fork Ruth':
         return { lat: 62.9350, lng: -150.2250 };
+      case 'Ruth Glacier':
+        return { lat: 62.9450, lng: -150.1750 };
+      case 'Pika Glacier/Little Switzerland':
+        return { lat: 62.8800, lng: -150.1950 };
       default:
         return { lat: 62.9300, lng: -150.1800 };
     }
@@ -90,11 +120,62 @@ const ExpeditionMap = ({ selectedRoutes }) => {
   const handleCloseInfoWindow = useCallback(() => {
     setSelectedMarker(null);
   }, []);
+  
+  // Toggle route selection from the map
+  const handleRouteToggle = useCallback((route) => {
+    // Find if this route is already selected
+    const isAlreadySelected = selectedRoutes.some(r => r.id === route.id);
+    
+    if (isAlreadySelected) {
+      // Remove from selected routes
+      setSelectedRoutes(prev => prev.filter(r => r.id !== route.id));
+    } else {
+      // Add to selected routes
+      setSelectedRoutes(prev => [...prev, route]);
+    }
+    
+    // Update the marker to reflect the new selection state
+    setSelectedMarker(prev => ({
+      ...prev,
+      isSelected: !isAlreadySelected
+    }));
+  }, [selectedRoutes, setSelectedRoutes]);
 
   // Callback for when the map loads
   const onMapLoad = useCallback((map) => {
     mapRef.current = map;
-  }, []);
+    
+    // Create bounds that include all routes and landing zones
+    const bounds = new window.google.maps.LatLngBounds();
+    
+    // Add all route coordinates to bounds - use raw routes data to avoid dependency issues
+    routes.forEach(route => {
+      if (route.coordinates && route.coordinates.lat && route.coordinates.lng) {
+        bounds.extend(new window.google.maps.LatLng(
+          route.coordinates.lat,
+          route.coordinates.lng
+        ));
+      }
+    });
+    
+    // Add landing zone coordinates to bounds
+    landingZones.forEach(zone => {
+      if (zone.coordinates && zone.coordinates.lat && zone.coordinates.lng) {
+        bounds.extend(new window.google.maps.LatLng(
+          zone.coordinates.lat,
+          zone.coordinates.lng
+        ));
+      }
+    });
+    
+    // Store the bounds for later use
+    setMapBounds(bounds);
+    
+    // Fit the map to these bounds with padding
+    map.fitBounds(bounds, 50); // 50 pixels of padding
+    
+    console.log(`Map loaded with ${routes.length} routes and ${landingZones.length} landing zones`);
+  }, [landingZones, routes]);
 
   // Get color for route categories
   const getRouteColor = (category) => {
@@ -110,8 +191,24 @@ const ExpeditionMap = ({ selectedRoutes }) => {
     return categoryColors[category] || '#757575';
   };
 
-  // Landing zone color
+  // Landing zone styles
   const landingZoneColor = '#ff9800';
+  const landingZoneSelectedColor = '#ff5722';
+  
+  // Map bounds for auto-centering
+  const [mapBounds, setMapBounds] = useState(null);
+  
+  // Get all routes from the routes database for filtering/display
+  const allRoutes = useMemo(() => {
+    // We need to ensure each route has proper coordinates
+    return routes.map(route => ({
+      ...route,
+      isSelected: selectedRoutes.some(r => r.id === route.id),
+      type: 'route',
+      // Ensure coordinates is properly set
+      coordinates: route.coordinates || { lat: 62.9400, lng: -150.1600 }
+    }));
+  }, [selectedRoutes]);
 
   // Handle route selection on the map
   const handleMapRouteSelect = (routeId) => {
@@ -120,7 +217,32 @@ const ExpeditionMap = ({ selectedRoutes }) => {
   };
 
   // Get routes to display on map
-  const routesToDisplay = showAllRoutes ? routes : selectedRoutes;
+  const routesToDisplay = useMemo(() => {
+    const routesToShow = showAllRoutes ? allRoutes : allRoutes.filter(route => route.isSelected);
+    return routesToShow;
+  }, [showAllRoutes, allRoutes]);
+
+  // Render loading state or error
+  if (loadError) {
+    return (
+      <Container maxWidth="lg">
+        <Box display="flex" justifyContent="center" alignItems="center" height="500px">
+          <Typography variant="h5" color="error">Error loading Google Maps: {loadError.message}</Typography>
+        </Box>
+      </Container>
+    );
+  }
+
+  if (!isLoaded) {
+    return (
+      <Container maxWidth="lg">
+        <Box display="flex" justifyContent="center" alignItems="center" height="500px">
+          <CircularProgress />
+          <Typography variant="h6" ml={2}>Loading map...</Typography>
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="lg">
@@ -161,224 +283,191 @@ const ExpeditionMap = ({ selectedRoutes }) => {
             </Box>
           </Paper>
 
-          {/* Map */}
+          {/* Main Map */}
           <Paper sx={{ p: 0, mb: 3, height: '600px', overflow: 'hidden' }}>
-            <Box 
-              sx={{ 
-                height: '100%', 
-                backgroundColor: '#e8eaed',
-                position: 'relative',
-                overflow: 'hidden'
+            <GoogleMap
+              mapContainerStyle={{
+                width: '100%',
+                height: '100%',
               }}
+              center={center}
+              zoom={10}
+              options={{
+                ...mapOptions,
+                styles: [
+                  {
+                    "featureType": "administrative",
+                    "elementType": "geometry",
+                    "stylers": [{"visibility": "off"}]
+                  },
+                  {
+                    "featureType": "poi",
+                    "stylers": [{"visibility": "off"}]
+                  },
+                  {
+                    "featureType": "road",
+                    "elementType": "labels.icon",
+                    "stylers": [{"visibility": "off"}]
+                  },
+                  {
+                    "featureType": "transit",
+                    "stylers": [{"visibility": "off"}]
+                  }
+                ]
+              }}
+              onLoad={onMapLoad}
             >
-              {/* Static Map Background */}
-              <Box 
-                sx={{ 
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  backgroundImage: `linear-gradient(135deg, #f1f3f8 25%, #e3e6eb 25%, #e3e6eb 50%, #f1f3f8 50%, #f1f3f8 75%, #e3e6eb 75%, #e3e6eb 100%)`,
-                  backgroundSize: '40px 40px',
-                  zIndex: 1
-                }}
-              />
-              
-              {/* Mountain Silhouettes */}
-              <Box 
-                sx={{ 
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  height: '200px',
-                  background: 'linear-gradient(180deg, transparent 0%, rgba(100, 120, 140, 0.5) 100%)',
-                  clipPath: 'polygon(0% 100%, 10% 80%, 15% 90%, 20% 75%, 25% 85%, 30% 70%, 35% 60%, 40% 80%, 45% 60%, 50% 40%, 55% 50%, 60% 30%, 65% 45%, 70% 20%, 75% 35%, 80% 25%, 85% 35%, 90% 15%, 95% 30%, 100% 5%, 100% 100%)',
-                  zIndex: 2
-                }}
-              />
-              
-              {/* Glacier */}
-              <Box 
-                sx={{ 
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '60%',
-                  height: '250px',
-                  background: 'linear-gradient(0deg, rgba(220, 230, 240, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%)',
-                  clipPath: 'polygon(0% 100%, 10% 90%, 20% 100%, 30% 95%, 40% 100%, 50% 90%, 60% 100%, 70% 95%, 80% 100%, 90% 90%, 100% 100%, 80% 0%, 20% 0%)',
-                  zIndex: 3
-                }}
-              />
-              
-              {/* Route Markers */}
-              {routesToDisplay.map((route, index) => {
-                // Create a deterministic position based on route id or index
-                const position = {
-                  left: `${25 + (index * 15) % 55}%`,
-                  top: `${30 + (index * 10) % 40}%`
-                };
-                
-                return (
-                  <Box
-                    key={route.id}
-                    sx={{
-                      position: 'absolute',
-                      left: position.left,
-                      top: position.top,
-                      width: 24,
-                      height: 24,
-                      borderRadius: '50%',
-                      backgroundColor: getRouteColor(route.classification || 'Classic'),
-                      border: '2px solid white',
-                      zIndex: 5,
-                      cursor: 'pointer',
-                      '&:hover': {
-                        transform: 'scale(1.2)',
-                        boxShadow: '0 0 0 3px rgba(255,255,255,0.5)'
-                      },
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                    onClick={() => handleMarkerClick({ 
-                      type: 'route', 
-                      data: route 
-                    })}
-                  >
-                    <Typography variant="caption" sx={{ color: 'white', fontWeight: 'bold' }}>
-                      {index + 1}
-                    </Typography>
-                  </Box>
-                );
-              })}
-              
-              {/* Landing Zone Markers */}
-              {showLandingZones && landingZones.map((zone, index) => {
-                // Create a deterministic position for landing zones
-                const position = {
-                  left: `${20 + (index * 20) % 60}%`,
-                  top: `${65 + (index * 5) % 15}%`
-                };
-                
-                return (
-                  <Box
-                    key={`lz-${index}`}
-                    sx={{
-                      position: 'absolute',
-                      left: position.left,
-                      top: position.top,
-                      width: 0,
-                      height: 0,
-                      borderLeft: '10px solid transparent',
-                      borderRight: '10px solid transparent',
-                      borderBottom: '20px solid #ff9800',
-                      zIndex: 5,
-                      cursor: 'pointer',
-                      '&::after': {
-                        content: '""',
-                        position: 'absolute',
-                        top: '20px',
-                        left: '-10px',
-                        width: '20px',
-                        height: '20px',
-                        backgroundColor: 'transparent'
-                      },
-                      '&:hover': {
-                        transform: 'scale(1.2)'
-                      }
-                    }}
-                    onClick={() => handleMarkerClick({ 
-                      type: 'landingZone', 
-                      data: zone 
-                    })}
-                  />
-                );
-              })}
-              
-              {/* Info Window for Selected Marker */}
-              {selectedMarker && (
-                <Box 
-                  sx={{
-                    position: 'absolute',
-                    right: '10px',
-                    top: '10px',
-                    backgroundColor: 'white',
-                    border: '1px solid rgba(0,0,0,0.2)',
-                    borderRadius: '4px',
-                    padding: '12px',
-                    maxWidth: '250px',
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-                    zIndex: 10
+              {/* Display landing zones */}
+              {showLandingZones && landingZones.map((zone, index) => (
+                <Marker
+                  key={`landing-${index}`}
+                  position={zone.coordinates}
+                  icon={{
+                    url: 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png',
+                    scaledSize: new window.google.maps.Size(32, 32)
                   }}
+                  onClick={() => handleMarkerClick(zone)}
+                  animation={selectedMarker && selectedMarker.name === zone.name ? 
+                    window.google.maps.Animation.BOUNCE : null}
+                  zIndex={10} // Higher z-index for landing zones
+                />
+              ))}
+              
+              {/* Display routes */}
+              {routes.map((route) => {
+                // Get color for the route category
+                const routeColor = getRouteColor(route.category || 'Classic');
+                
+                // Check if this route is selected for the expedition
+                const isSelected = selectedRoutes.some(r => r.id === route.id);
+                
+                // Create a simple upward path from the starting point
+                // This represents the climbing route direction
+                const routePath = [
+                  route.coordinates,
+                  {
+                    lat: route.coordinates.lat + 0.01,
+                    lng: route.coordinates.lng
+                  }
+                ];
+                
+                return (
+                  <React.Fragment key={route.id}>
+                    {/* Route marker */}
+                    <Marker
+                      position={route.coordinates}
+                      icon={{
+                        path: window.google.maps.SymbolPath.CIRCLE,
+                        fillColor: routeColor,
+                        fillOpacity: 0.9,
+                        strokeWeight: 2,
+                        strokeColor: '#FFFFFF',
+                        scale: 7
+                      }}
+                      onClick={() => handleMarkerClick(route)}
+                      zIndex={3}
+                    />
+                    
+                    {/* Route line */}
+                    <Polyline
+                      path={routePath}
+                      options={{
+                        strokeColor: routeColor,
+                        strokeOpacity: 0.8,
+                        strokeWeight: 3
+                      }}
+                    />
+                  </React.Fragment>
+                );
+              })}
+              
+              {/* Info Window */}
+              {selectedMarker && (
+                <InfoWindow
+                  position={selectedMarker.coordinates || selectedMarker.data?.coordinates}
+                  onCloseClick={handleCloseInfoWindow}
                 >
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                  <div style={{ padding: '5px', maxWidth: '220px' }}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                      {selectedMarker.data.name}
+                      {selectedMarker.name}
                     </Typography>
-                    <Button 
-                      size="small"
-                      onClick={handleCloseInfoWindow}
-                      sx={{ minWidth: '24px', height: '24px', p: 0, ml: 1 }}
-                    >
-                      ×
-                    </Button>
-                  </Box>
-                  
-                  {selectedMarker.type === 'route' ? (
-                    <>
-                      <Typography variant="body2">
-                        <strong>{selectedMarker.data.peak}</strong> | {selectedMarker.data.grade}
-                      </Typography>
-                      {selectedMarker.data.technicalGrade && (
-                        <Typography variant="body2" gutterBottom>
-                          {selectedMarker.data.technicalGrade} | {selectedMarker.data.verticalGain}ft
+                    {selectedMarker.type === 'route' ? (
+                      <div>
+                        <Typography variant="body2">
+                          <strong>{selectedMarker.peak}</strong> | {selectedMarker.grade}
                         </Typography>
-                      )}
-                      {selectedMarker.data.characteristics && (
-                        <Typography variant="body2" sx={{ mt: 1 }}>
-                          {selectedMarker.data.characteristics.substring(0, 100)}...
+                        {selectedMarker.technicalGrade && (
+                          <Typography variant="body2">
+                            {selectedMarker.technicalGrade} | {selectedMarker.verticalGain}ft
+                          </Typography>
+                        )}
+                        <Typography variant="body2" sx={{ mt: 0.5, fontSize: '0.8rem', color: 'text.secondary' }}>
+                          {selectedMarker.firstAscent ? `First Ascent: ${selectedMarker.firstAscent}` : ''}
                         </Typography>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      <Typography variant="body2">
-                        Elevation: {selectedMarker.data.elevation}ft
-                      </Typography>
-                      <Typography variant="body2">
-                        Operated by: {selectedMarker.data.airTaxi}
-                      </Typography>
-                      <Typography variant="body2" gutterBottom>
-                        Price: ~${selectedMarker.data.price} per person (round trip)
-                      </Typography>
-                      {selectedMarker.data.notes && (
-                        <Typography variant="body2" sx={{ mt: 1 }}>
-                          {selectedMarker.data.notes}
+                        {selectedMarker.pitches && (
+                          <Typography variant="body2" sx={{ fontSize: '0.8rem', color: 'text.secondary' }}>
+                            {selectedMarker.pitches} pitches
+                          </Typography>
+                        )}
+                        <Typography variant="body2" sx={{ fontSize: '0.8rem', color: 'text.secondary' }}>
+                          Landing Zone: {selectedMarker.landingZone || "Ruth Gorge"}
                         </Typography>
-                      )}
-                    </>
-                  )}
-                </Box>
+                        <Box sx={{ mt: 1, display: 'flex', gap: 1 }}>
+                          <Button 
+                            size="small" 
+                            variant="outlined" 
+                            color="primary"
+                            onClick={() => handleMapRouteSelect(selectedMarker.id)}
+                          >
+                            View Details
+                          </Button>
+                          <Button 
+                            size="small" 
+                            variant={selectedMarker.isSelected ? "contained" : "outlined"} 
+                            color={selectedMarker.isSelected ? "secondary" : "primary"}
+                            onClick={() => handleRouteToggle(selectedMarker)}
+                          >
+                            {selectedMarker.isSelected ? "Selected" : "Add Route"}
+                          </Button>
+                        </Box>
+                      </div>
+                    ) : (
+                      <div>
+                        <Typography variant="body2">
+                          Elevation: {selectedMarker.elevation}ft
+                        </Typography>
+                        <Typography variant="body2">
+                          Air Taxi: {selectedMarker.airTaxi}
+                        </Typography>
+                        <Typography variant="body2">
+                          Price: ~${selectedMarker.price}
+                        </Typography>
+                        <Typography variant="body2" sx={{ mt: 0.5, fontSize: '0.8rem', color: 'text.secondary' }}>
+                          Good access point for: {selectedMarker.peak || "Ruth Gorge"}
+                        </Typography>
+                        {selectedMarker.notes && (
+                          <Typography variant="body2" sx={{ fontSize: '0.8rem', color: 'text.secondary', mt: 0.5 }}>
+                            {selectedMarker.notes}
+                          </Typography>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </InfoWindow>
               )}
               
-              {/* Legend */}
-              <Box 
-                sx={{
-                  position: 'absolute',
-                  left: '10px',
-                  bottom: '10px',
-                  backgroundColor: 'rgba(255,255,255,0.8)',
-                  borderRadius: '4px',
-                  padding: '8px',
-                  zIndex: 10
-                }}
-              >
+              {/* Map Legend */}
+              <div style={{
+                position: 'absolute',
+                left: '10px',
+                bottom: '10px',
+                backgroundColor: 'rgba(255,255,255,0.8)',
+                padding: '8px',
+                borderRadius: '4px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+              }}>
                 <Typography variant="caption" sx={{ fontWeight: 'bold', display: 'block', mb: 1 }}>
-                  Ruth Gorge Glacier - Interactive Map
+                  Ruth Gorge - Map Legend
                 </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -390,16 +479,20 @@ const ExpeditionMap = ({ selectedRoutes }) => {
                     <Typography variant="caption">Modern Classic Routes</Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#7b1fa2' }} />
+                    <Typography variant="caption">Modern Routes</Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#c62828' }} />
                     <Typography variant="caption">Elite Routes</Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box sx={{ width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderBottom: '10px solid #ff9800' }} />
+                    <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#ff9800' }} />
                     <Typography variant="caption">Landing Zones</Typography>
                   </Box>
                 </Box>
-              </Box>
-            </Box>
+              </div>
+            </GoogleMap>
           </Paper>
 
           <Paper sx={{ p: 3, mb: 3 }}>

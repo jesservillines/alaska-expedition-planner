@@ -16,6 +16,8 @@ import Calendar from './pages/Calendar';
 import SimpleBudgetCalculator from './pages/SimpleBudgetCalculator';
 import PackingList from './pages/PackingList';
 import LogisticsInfo from './pages/LogisticsInfo';
+import MapTest from './components/MapTest';
+import SimpleMap from './components/SimpleMap';
 
 function App() {
   // Application state
@@ -43,7 +45,10 @@ function App() {
           <Route path="/seasonal-info" element={<SeasonalInfo />} />
           <Route path="/map" element={<ExpeditionMap 
             selectedRoutes={selectedRoutes}
+            setSelectedRoutes={setSelectedRoutes}
           />} />
+          <Route path="/map-simple" element={<SimpleMap />} />
+          <Route path="/map-test" element={<MapTest />} />
           <Route path="/calendar" element={<Calendar 
             expeditionDates={expeditionDates}
             setExpeditionDates={setExpeditionDates}
