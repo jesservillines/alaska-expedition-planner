@@ -5,12 +5,13 @@ const packingList = {
     {
       name: "Technical Climbing Gear",
       items: [
-        { name: "Ice tools (2)", essential: true, weight: 1000, notes: "Technical tools appropriate for water ice and mixed climbing" },
-        { name: "Crampons", essential: true, weight: 1000, notes: "Technical crampons with vertical front points" },
+        { name: "Petzl Nomic Ice Tools (pair)", essential: true, weight: 1170, notes: "Premium technical tools with exceptional balance and swing, 585g each" },
+        { name: "Black Diamond Raven Pro Ice Axe (50cm)", essential: true, weight: 373, notes: "Lightweight technical mountaineering axe with stainless steel head" },
+        { name: "Petzl Dart Crampons", essential: true, weight: 815, notes: "Technical lightweight crampons with mono-point configuration" },
         { name: "Alpine climbing harness", essential: true, weight: 400, notes: "Adjustable to fit over layers" },
-        { name: "Climbing helmet", essential: true, weight: 300, notes: "Rated for climbing and mountaineering" },
+        { name: "Petzl Meteor Climbing Helmet", essential: true, weight: 240, notes: "Lightweight with excellent ventilation, certified for climbing, mountaineering and ski touring" },
         { name: "Ice screws", essential: true, weight: 800, notes: "8-12 screws of varying lengths (13-22cm)" },
-        { name: "Rock protection", essential: false, weight: 1500, notes: "Set of cams/nuts as appropriate for route" },
+        { name: "Black Diamond Camalot C4 Cams (set)", essential: false, weight: 1200, notes: "Full set of reliable, versatile cams for protection" },
         { name: "Double ropes", essential: true, weight: 3600, notes: "2x 60m half ropes preferred for alpine routes" },
         { name: "Personal anchor system", essential: true, weight: 200, notes: "For belays and anchors" },
         { name: "Belay device with guide mode", essential: true, weight: 100, notes: "For belaying and rappelling" },
@@ -43,10 +44,14 @@ const packingList = {
     {
       name: "Camping & Living",
       items: [
-        { name: "4-season tent", essential: true, weight: 4000, notes: "Expedition-grade with strong poles for high winds" },
-        { name: "Sleeping bag", essential: true, weight: 1800, notes: "Rated to at least -20°F/-30°C" },
+        { name: "The North Face Mountain 25 Tent", essential: true, weight: 4450, notes: "Expedition-grade 2-person 4-season tent for extreme conditions" },
+        { name: "Rab Latok Mountain 2 Tent", essential: false, weight: 1935, notes: "Lightweight 2-person alpine tent with Pertex Shield fabric" },
+        { name: "Western Mountaineering Versalite Sleeping Bag", essential: true, weight: 907, notes: "Premium down bag rated to -10°F/-23°C, 6'0\" length" },
+        { name: "Expedition sleeping bag (alternative)", essential: false, weight: 1800, notes: "Rated to at least -20°F/-30°C for extreme conditions" },
         { name: "Sleeping pads", essential: true, weight: 900, notes: "Insulated inflatable pad plus foam pad" },
-        { name: "Stove system", essential: true, weight: 600, notes: "White gas stove recommended for cold conditions" },
+        { name: "MSR Reactor 1.7L Stove System", essential: true, weight: 488, notes: "Fast boiling, wind-resistant integrated canister stove system" },
+        { name: "Jetboil Stash Cooking System", essential: false, weight: 201, notes: "Ultralight cooking system, 40% lighter than standard Jetboil" },
+        { name: "White gas stove system (alternative)", essential: false, weight: 600, notes: "White gas stove recommended for extreme cold conditions" },
         { name: "Fuel", essential: true, weight: 2000, notes: "~8oz per person per day for melting snow and cooking" },
         { name: "Cooking pot set", essential: true, weight: 800, notes: "With heat exchanger for efficiency" },
         { name: "Eating utensils", essential: true, weight: 100, notes: "Bowl, spoon, insulated mug" },
@@ -70,7 +75,7 @@ const packingList = {
         { name: "Soft shell pants", essential: true, weight: 500, notes: "Wind/water resistant, breathable" },
         { name: "Insulated pants", essential: true, weight: 600, notes: "Down or synthetic fill" },
         { name: "Hard shell pants", essential: true, weight: 400, notes: "Waterproof/breathable with full-length zips" },
-        { name: "Insulated jacket", essential: true, weight: 800, notes: "Substantial down or synthetic belay parka" },
+        { name: "Mammut Eigerjoch Pro IN Hooded Jacket", essential: true, weight: 826, notes: "Premium down jacket with Pertex Quantum Pro exterior for extreme conditions" },
         { name: "Hard shell jacket", essential: true, weight: 500, notes: "Waterproof/breathable with hood" },
         { name: "Glove liners", essential: true, weight: 50, notes: "Thin liner gloves for dexterity" },
         { name: "Mid-weight gloves", essential: true, weight: 150, notes: "For active climbing" },
@@ -85,6 +90,13 @@ const packingList = {
         { name: "Glacier glasses", essential: true, weight: 50, notes: "Category 4 lenses" },
         { name: "Goggles", essential: true, weight: 150, notes: "For storms and high wind" },
         { name: "Gaiters", essential: true, weight: 200, notes: "Full-height for deep snow" }
+      ]
+    },
+    {
+      name: "Packs & Carriers",
+      items: [
+        { name: "Hyperlite Mountain Gear Prism 40 Backpack", essential: true, weight: 827, notes: "Ultralight 40L alpine pack made from Dyneema composite fabric" },
+        { name: "Expedition pack (65-80L)", essential: false, weight: 2500, notes: "Larger pack for carrying full expedition loads" }
       ]
     },
     {
@@ -106,7 +118,8 @@ const packingList = {
         { name: "Sunscreen", essential: true, weight: 100, notes: "SPF 50+ and lip protection" },
         { name: "Blister treatment", essential: true, weight: 50, notes: "Moleskin, tape, 2nd skin" },
         { name: "Pain relievers", essential: true, weight: 50, notes: "Ibuprofen, acetaminophen" },
-        { name: "Emergency shelter", essential: true, weight: 300, notes: "Bivy sack or emergency blanket" },
+        { name: "Samaya Nano Bivy", essential: true, weight: 235, notes: "Ultralight emergency bivy made from 3-layer Nanovent fabric" },
+        { name: "Outdoor Research Alpine Bivy", essential: false, weight: 907, notes: "Fully-featured bivy with excellent weather protection" },
         { name: "Chemical hand/foot warmers", essential: false, weight: 200, notes: "For extreme cold" }
       ]
     },
