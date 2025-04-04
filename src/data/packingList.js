@@ -14,7 +14,8 @@ const packingList = {
         { name: "Black Diamond Camalot C4 Cams (set)", essential: false, weight: 1200, notes: "Full set of reliable, versatile cams for protection" },
         { name: "Double ropes", essential: true, weight: 3600, notes: "2x 60m half ropes preferred for alpine routes" },
         { name: "Personal anchor system", essential: true, weight: 200, notes: "For belays and anchors" },
-        { name: "Belay device with guide mode", essential: true, weight: 100, notes: "For belaying and rappelling" },
+        { name: "Petzl GriGri belay device", essential: true, weight: 175, notes: "Assisted braking device for belaying and rappelling" },
+        { name: "Black Diamond ATC-Guide belay device", essential: false, weight: 80, notes: "Versatile tube-style device with guide mode capability" },
         { name: "Prusik cords/slings", essential: true, weight: 200, notes: "For crevasse rescue and emergency ascension" },
         { name: "Locking carabiners", essential: true, weight: 400, notes: "6-8 for anchors and belays" },
         { name: "Non-locking carabiners", essential: true, weight: 600, notes: "10-12 for protection" },
@@ -27,8 +28,22 @@ const packingList = {
     {
       name: "Glacier Travel & Skiing",
       items: [
-        { name: "Mountaineering boots", essential: true, weight: 2000, notes: "Double boots with removable liners for cold conditions" },
-        { name: "Alpine touring skis/splitboard", essential: false, weight: 3500, notes: "For ski mountaineering objectives" },
+        { name: "Jones Ultralight Butterfly Splitboard (158cm)", essential: false, weight: 2800, notes: "Ultralight technical splitboard with long effective edge for alpine conditions" },
+        { name: "Lib Tech Orca Split (158cm)", essential: false, weight: 3200, notes: "Directional pow-focused splitboard with hybrid rocker profile" },
+        { name: "Jones Ultralight Stratos Splitboard (159cm)", essential: false, weight: 2700, notes: "Ultralight all-terrain split with directional freeride shape" },
+        { name: "Phantom M6 Bindings (pair)", essential: false, weight: 1028, notes: "Ultralight hardboot splitboard bindings, 514g each" },
+        { name: "Phantom Solo Cleats", essential: false, weight: 145, notes: "Lightweight fixed-position splitboard cleats" },
+        { name: "Phantom Slipper HD", essential: false, weight: 850, notes: "Premium hardboot interface for splitboarding" },
+        { name: "Plum Pekye Tech Toes", essential: false, weight: 300, notes: "Lightweight tech toe pieces for touring" },
+        { name: "Phantom Rocket Risers", essential: false, weight: 200, notes: "All aluminum risers for splitboard touring" },
+        { name: "Verts", essential: false, weight: 650, notes: "Snow climbing aids for steep terrain" },
+        { name: "Phantom GT Splitboard Crampons", essential: false, weight: 350, notes: "Specialized crampons for splitboards on firm snow" },
+        { name: "Mammut Nordwand 6000 High Boots", essential: true, weight: 980, notes: "High-performance mountaineering boots for technical climbing, single boot weight" },
+        { name: "La Sportiva G2 Evo 6000m Boots", essential: false, weight: 1050, notes: "Ultralight thermal double boots for extreme cold, single boot weight" },
+        { name: "Scarpa Maestrale Ski Boots", essential: false, weight: 1400, notes: "Versatile touring boots with 110 flex, weight per boot" },
+        { name: "Scarpa F1 XT Ski Boots", essential: false, weight: 1145, notes: "Lightweight touring boots optimized for uphill efficiency, weight per boot" },
+        { name: "Blizzard Zero G 85 Skis (178cm)", essential: false, weight: 2358, notes: "Lightweight touring skis, weight per pair, 85mm underfoot" },
+        { name: "Blizzard Zero G 95 Skis (178cm)", essential: false, weight: 2500, notes: "Versatile backcountry skis, weight per pair, 95mm underfoot" },
         { name: "Climbing skins", essential: false, weight: 500, notes: "Sized for your skis" },
         { name: "Ski crampons", essential: false, weight: 300, notes: "For icy ascents" },
         { name: "Ski poles/collapsible poles", essential: true, weight: 500, notes: "Adjustable with snow baskets" },
@@ -36,7 +51,9 @@ const packingList = {
         { name: "Avalanche beacon", essential: true, weight: 250, notes: "Digital 3-antenna transceiver" },
         { name: "Avalanche probe", essential: true, weight: 300, notes: "Minimum 240cm length" },
         { name: "Avalanche shovel", essential: true, weight: 600, notes: "Metal blade, collapsible" },
-        { name: "Crevasse rescue pulley", essential: true, weight: 100, notes: "For glacier rescue" },
+        { name: "Petzl Micro Traxion pulley", essential: true, weight: 85, notes: "Lightweight progress capture pulley for glacier rescue" },
+        { name: "Petzl Nano Traxion pulley", essential: false, weight: 53, notes: "Ultra-compact progress capture pulley for rescue" },
+        { name: "NanoTrax motion capture system", essential: false, weight: 1200, notes: "Wearable motion tracking system for technical movement analysis" },
         { name: "Snow pickets", essential: true, weight: 600, notes: "2-3 for glacier travel anchors" },
         { name: "Sled or pulk", essential: false, weight: 5000, notes: "For hauling gear on glacier approaches" }
       ]
@@ -96,6 +113,9 @@ const packingList = {
       name: "Packs & Carriers",
       items: [
         { name: "Hyperlite Mountain Gear Prism 40 Backpack", essential: true, weight: 827, notes: "Ultralight 40L alpine pack made from Dyneema composite fabric" },
+        { name: "Samaya Ultra 35 Backpack", essential: false, weight: 741, notes: "Premium ultralight alpine pack with Dyneema composite fabric" },
+        { name: "Raide Research LF 30L Backpack", essential: false, weight: 1060, notes: "Technical ski mountaineering pack with quick avalanche tool access" },
+        { name: "Patagonia Ascensionist 30L Backpack", essential: false, weight: 700, notes: "Lightweight minimalist alpine pack with daisy chains for gear attachment" },
         { name: "Expedition pack (65-80L)", essential: false, weight: 2500, notes: "Larger pack for carrying full expedition loads" }
       ]
     },

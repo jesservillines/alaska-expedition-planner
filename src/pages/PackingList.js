@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -46,6 +46,8 @@ import {
 } from '@mui/icons-material';
 
 import packingList from '../data/packingList';
+import { climberProfiles, essentialGear } from '../data/climberProfiles';
+import ClimberProfiles from '../components/climbers/ClimberProfiles';
 
 const PackingList = () => {
   const theme = useTheme();
@@ -71,13 +73,30 @@ const PackingList = () => {
     }, {})
   );
   
+  // Climber profile states
+  const [selectedClimbers, setSelectedClimbers] = useState([]);
+  const [viewMode, setViewMode] = useState('team'); // 'team' or 'individual'
+  const [activeClimber, setActiveClimber] = useState(null);
+  
   // Calculate weight totals
   const getTotalWeight = () => {
+    // If viewing individual climber mode
+    if (viewMode === 'individual' && activeClimber) {
+      return getClimberWeight(activeClimber);
+    }
+    
+    // If viewing team mode, calculate sum of all selected climbers
     let totalWeight = 0;
+    
+    // Add base body weight of all selected climbers
+    selectedClimbers.forEach(climber => {
+      totalWeight += climber.weight || 0;
+    });
     
     // Weight from packingList items
     packingList.categories.forEach(category => {
       category.items.forEach(item => {
+        // Count the item if it's selected in team mode
         if (checkedItems[`${category.name}-${item.name}`]) {
           totalWeight += item.weight || 0;
         }
@@ -87,6 +106,33 @@ const PackingList = () => {
     // Weight from custom items
     customItems.forEach(item => {
       if (checkedItems[`custom-${item.id}`]) {
+        totalWeight += item.weight || 0;
+      }
+    });
+    
+    return totalWeight;
+  };
+  
+  // Calculate individual climber's weight including their gear
+  const getClimberWeight = (climber) => {
+    if (!climber) return 0;
+    
+    let totalWeight = climber.weight || 0; // Start with body weight
+    
+    // Add weight of all checked items for this climber
+    packingList.categories.forEach(category => {
+      category.items.forEach(item => {
+        const itemKey = `${category.name}-${item.name}-${climber.id}`;
+        if (checkedItems[itemKey]) {
+          totalWeight += item.weight || 0;
+        }
+      });
+    });
+    
+    // Add custom items weight
+    customItems.forEach(item => {
+      const itemKey = `custom-${item.id}-${climber.id}`;
+      if (checkedItems[itemKey]) {
         totalWeight += item.weight || 0;
       }
     });
@@ -121,13 +167,19 @@ const PackingList = () => {
   };
   
   // Handle item checkbox change
-  const handleCheckItem = (category, itemName) => {
-    const itemKey = `${category}-${itemName}`;
+  const handleCheckItem = (category, itemName, climberId = null) => {
+    // Generate the appropriate key based on whether we're in individual mode
+    const itemKey = climberId 
+      ? `${category}-${itemName}-${climberId}` 
+      : `${category}-${itemName}`;
+    
     setCheckedItems({
       ...checkedItems,
       [itemKey]: !checkedItems[itemKey]
     });
   };
+  
+
   
   // Toggle a category's expanded state
   const toggleCategory = (categoryName) => {
@@ -220,6 +272,107 @@ const PackingList = () => {
     window.print();
   };
   
+  // Handle climber selection
+  const handleToggleClimber = (climber) => {
+    // Check if climber is already selected
+    const isSelected = selectedClimbers.some(c => c.id === climber.id);
+    
+    if (isSelected) {
+      // Remove climber from selection
+      setSelectedClimbers(selectedClimbers.filter(c => c.id !== climber.id));
+      
+      // If active climber is being removed, reset to team view
+      if (activeClimber && activeClimber.id === climber.id) {
+        setActiveClimber(null);
+        setViewMode('team');
+      }
+    } else {
+      // Add climber to selection
+      setSelectedClimbers([...selectedClimbers, climber]);
+      
+      // Automatically check their preset gear
+      if (climber.presetGear && climber.presetGear.length > 0) {
+        const newCheckedItems = { ...checkedItems };
+        
+        // First add essential gear for everyone
+        essentialGear.forEach(itemName => {
+          // Find the item in the packing list
+          packingList.categories.forEach(category => {
+            category.items.forEach(item => {
+              if (item.name === itemName) {
+                const itemKey = `${category.name}-${item.name}-${climber.id}`;
+                newCheckedItems[itemKey] = true;
+              }
+            });
+          });
+        });
+        
+        // Then add their preset gear
+        climber.presetGear.forEach(itemName => {
+          // Find the item in the packing list
+          packingList.categories.forEach(category => {
+            category.items.forEach(item => {
+              if (item.name === itemName) {
+                const itemKey = `${category.name}-${item.name}-${climber.id}`;
+                newCheckedItems[itemKey] = true;
+              }
+            });
+          });
+        });
+        
+        setCheckedItems(newCheckedItems);
+      }
+    }
+  };
+  
+  // Set active climber for individual view
+  const handleSetActiveClimber = (climber) => {
+    setActiveClimber(climber);
+    setViewMode('individual');
+  };
+  
+  // Switch to team view
+  const handleSwitchToTeamView = () => {
+    setViewMode('team');
+    setActiveClimber(null);
+  };
+  
+  // Load preset gear immediately when climbers are selected or view mode changes
+  useEffect(() => {
+    // If in team mode, check all items that are selected by any team member
+    if (viewMode === 'team') {
+      const newCheckedItems = { ...checkedItems };
+      
+      selectedClimbers.forEach(climber => {
+        // Find each climber's checked items
+        packingList.categories.forEach(category => {
+          category.items.forEach(item => {
+            const individualItemKey = `${category.name}-${item.name}-${climber.id}`;
+            const teamItemKey = `${category.name}-${item.name}`;
+            
+            // If this item is checked for this climber, also check it in team view
+            if (checkedItems[individualItemKey]) {
+              newCheckedItems[teamItemKey] = true;
+            }
+          });
+        });
+        
+        // Custom items
+        customItems.forEach(item => {
+          const individualItemKey = `custom-${item.id}-${climber.id}`;
+          const teamItemKey = `custom-${item.id}`;
+          
+          if (checkedItems[individualItemKey]) {
+            newCheckedItems[teamItemKey] = true;
+          }
+        });
+      });
+      
+      setCheckedItems(newCheckedItems);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewMode, selectedClimbers]);
+  
   const { totalItems, checkedCount } = getItemCounts();
   const totalWeight = getTotalWeight();
   const totalWeightLbs = Math.round(totalWeight / 453.59237 * 10) / 10; // Convert grams to pounds
@@ -235,6 +388,18 @@ const PackingList = () => {
           them and track your gear weight.
         </Typography>
       </Box>
+      
+      {/* Climber Profiles Section */}
+      <ClimberProfiles 
+        climbers={climberProfiles}
+        selectedClimbers={selectedClimbers}
+        onToggleClimber={handleToggleClimber}
+        onSetActiveClimber={handleSetActiveClimber}
+        activeClimber={activeClimber}
+        viewMode={viewMode}
+        onSwitchToTeamView={handleSwitchToTeamView}
+        getTotalWeight={getTotalWeight}
+      />
       
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
@@ -323,15 +488,19 @@ const PackingList = () => {
                             <TableRow 
                               key={item.name}
                               sx={{ 
-                                backgroundColor: checkedItems[`${category.name}-${item.name}`] 
-                                  ? 'rgba(76, 175, 80, 0.08)' 
-                                  : 'inherit'
+                                backgroundColor: viewMode === 'individual' && activeClimber 
+                                  ? checkedItems[`${category.name}-${item.name}-${activeClimber.id}`] ? 'rgba(76, 175, 80, 0.08)' : 'inherit'
+                                  : checkedItems[`${category.name}-${item.name}`] ? 'rgba(76, 175, 80, 0.08)' : 'inherit'
                               }}
                             >
                               <TableCell padding="checkbox">
                                 <Checkbox
-                                  checked={Boolean(checkedItems[`${category.name}-${item.name}`])}
-                                  onChange={() => handleCheckItem(category.name, item.name)}
+                                  checked={viewMode === 'individual' && activeClimber 
+                                    ? Boolean(checkedItems[`${category.name}-${item.name}-${activeClimber.id}`]) 
+                                    : Boolean(checkedItems[`${category.name}-${item.name}`])}
+                                  onChange={() => viewMode === 'individual' && activeClimber 
+                                    ? handleCheckItem(category.name, item.name, activeClimber.id)
+                                    : handleCheckItem(category.name, item.name)}
                                   color="primary"
                                 />
                               </TableCell>
@@ -397,15 +566,19 @@ const PackingList = () => {
                           <TableRow 
                             key={item.id}
                             sx={{ 
-                              backgroundColor: checkedItems[`custom-${item.id}`] 
-                                ? 'rgba(76, 175, 80, 0.08)' 
-                                : 'inherit'
+                              backgroundColor: viewMode === 'individual' && activeClimber 
+                                ? checkedItems[`custom-${item.id}-${activeClimber.id}`] ? 'rgba(76, 175, 80, 0.08)' : 'inherit'
+                                : checkedItems[`custom-${item.id}`] ? 'rgba(76, 175, 80, 0.08)' : 'inherit'
                             }}
                           >
                             <TableCell padding="checkbox">
                               <Checkbox
-                                checked={Boolean(checkedItems[`custom-${item.id}`])}
-                                onChange={() => handleCheckItem('custom', item.id)}
+                                checked={viewMode === 'individual' && activeClimber 
+                                  ? Boolean(checkedItems[`custom-${item.id}-${activeClimber.id}`]) 
+                                  : Boolean(checkedItems[`custom-${item.id}`])}
+                                onChange={() => viewMode === 'individual' && activeClimber 
+                                  ? handleCheckItem('custom', item.id, activeClimber.id) 
+                                  : handleCheckItem('custom', item.id)}
                                 color="primary"
                               />
                             </TableCell>
@@ -583,6 +756,9 @@ const PackingList = () => {
           </Card>
         </Grid>
       </Grid>
+      
+      {/* New Profile Dialog */}
+      {/* Profile Dialog Removed - to be implemented in future update */}
       
       {/* Custom Item Dialog */}
       <Dialog open={openCustomDialog} onClose={handleCloseCustomDialog}>
