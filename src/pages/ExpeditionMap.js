@@ -30,10 +30,10 @@ const mapContainerStyle = {
   borderRadius: '8px'
 };
 
-// Center coordinates for the Ruth Gorge area
+// Center coordinates for the Ruth Gorge area - updated to more accurate position
 const center = {
-  lat: 62.9550,
-  lng: -150.1700
+  lat: 62.9053,
+  lng: -150.1900
 };
 
 // Map options
@@ -95,36 +95,36 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
   function getLandingZoneCoordinates(zoneName) {
     switch(zoneName) {
       case 'Ruth Gorge Basecamp (Donnelly Landing)':
-        return { lat: 62.9470, lng: -150.1700 };
+        return { lat: 62.9372, lng: -150.1933 }; // Updated
       case 'Root Canal (Moose\'s Tooth)':
-        return { lat: 62.9175, lng: -150.0800 };
+        return { lat: 62.9125, lng: -150.0667 }; // Updated
       case 'Mountain House/Sheldon Amphitheater':
-        return { lat: 62.9200, lng: -150.2400 };
+        return { lat: 62.8302, lng: -150.2167 }; // Updated
       case 'West Fork Ruth':
-        return { lat: 62.9350, lng: -150.2250 };
+        return { lat: 62.8813, lng: -150.2533 }; // Updated
       case 'Ruth Glacier':
-        return { lat: 62.9450, lng: -150.1750 };
+        return { lat: 62.9053, lng: -150.1918 }; // Updated
       case 'Pika Glacier/Little Switzerland':
-        return { lat: 62.8800, lng: -150.1950 };
+        return { lat: 62.8267, lng: -150.1800 }; // Updated
       default:
-        return { lat: 62.9300, lng: -150.1800 };
+        return { lat: 62.9053, lng: -150.1900 }; // Updated central point
     }
   }
   
   // Get coordinates for routes based on their peak and landing zone
   function getRouteCoordinates(route) {
-    // Base coordinates for the major peaks
+    // Base coordinates for the major peaks - updated with more accurate coordinates
     const peakCoordinates = {
-      "Moose's Tooth": { lat: 62.9175, lng: -150.0850 },
-      "Mount Dickey": { lat: 62.9480, lng: -150.1730 },
-      "Mount Barille": { lat: 62.9450, lng: -150.1770 },
-      "Mount Huntington": { lat: 62.9200, lng: -150.2450 },
-      "Mount Wake": { lat: 62.9350, lng: -150.2280 },
-      "London Tower": { lat: 62.9430, lng: -150.1820 },
-      "Mount Bradley": { lat: 62.9380, lng: -150.1650 },
-      "Mount Johnson": { lat: 62.9330, lng: -150.2050 },
-      "The Wisdom Tooth": { lat: 62.9160, lng: -150.0900 },
-      "Mount Dan Beard": { lat: 62.9520, lng: -150.1900 }
+      "Moose's Tooth": { lat: 62.9086, lng: -150.0667 }, // Updated
+      "Mount Dickey": { lat: 62.9372, lng: -150.1967 }, // Updated
+      "Mount Barille": { lat: 62.9253, lng: -150.1883 }, // Updated
+      "Mount Huntington": { lat: 62.8656, lng: -150.2833 }, // Updated
+      "Mount Wake": { lat: 62.8814, lng: -150.2483 }, // Updated
+      "London Tower": { lat: 62.9261, lng: -150.1692 }, // Updated
+      "Mount Bradley": { lat: 62.9189, lng: -150.1789 }, // Updated
+      "Mount Johnson": { lat: 62.9181, lng: -150.2122 }, // Updated
+      "The Wisdom Tooth": { lat: 62.9075, lng: -150.0750 }, // Updated
+      "Mount Dan Beard": { lat: 62.9489, lng: -150.1925 }  // Updated
     };
     
     // If we have coordinates for the route's peak, use those
@@ -188,6 +188,8 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
   
   // Toggle route selection from the map
   const handleRouteToggle = useCallback((route) => {
+    console.log('Toggling route:', route.id, route.name);
+    
     // Find if this route is already selected
     const isAlreadySelected = selectedRoutes.some(r => r.id === route.id);
     
@@ -200,10 +202,14 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
     }
     
     // Update the marker to reflect the new selection state
-    setSelectedMarker(prev => ({
+    setSelectedMarker(prev => prev ? {
       ...prev,
       isSelected: !isAlreadySelected
-    }));
+    } : null);
+    
+    // Log for debugging
+    console.log(`Route ${route.id} ${isAlreadySelected ? 'removed from' : 'added to'} selection.`);
+    console.log(`Total selected routes: ${isAlreadySelected ? selectedRoutes.length - 1 : selectedRoutes.length + 1}`);
   }, [selectedRoutes, setSelectedRoutes]);
 
   // Callback for when the map loads
@@ -240,6 +246,9 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
     map.fitBounds(bounds, 50); // 50 pixels of padding
     
     console.log(`Map loaded with ${routes.length} routes and ${landingZones.length} landing zones`);
+    console.log(`Routes with coordinates: ${routes.filter(r => r.coordinates).length}`);
+    // Force redraw of routes by logging them
+    routes.slice(0, 5).forEach(route => console.log(`Route ${route.id}: ${route.name}, Peak: ${route.peak}`));
   }, [landingZones, routes]);
 
   // Get color for route categories
@@ -266,7 +275,7 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
   // Get all routes from the routes database for filtering/display
   const allRoutes = useMemo(() => {
     // We need to ensure each route has proper coordinates
-    return routes.map(route => {
+    const processedRoutes = routes.map(route => {
       // Get coordinates for this route based on its peak and landing zone
       const coordinates = getRouteCoordinates(route);
       
@@ -277,6 +286,9 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
         coordinates: coordinates
       };
     });
+    
+    console.log(`Processed ${processedRoutes.length} routes with coordinates`);
+    return processedRoutes;
   }, [selectedRoutes]); // Removed landingZones dependency to avoid circular references
 
   // Handle route selection on the map
@@ -402,61 +414,98 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
                 />
               ))}
               
-              {/* Display routes */}
-              {allRoutes.map((route) => {
-                // Get color for the route category
-                const routeColor = getRouteColor(route.category || route.classification || 'Classic');
-                
-                // Check if this route is selected for the expedition
-                const isSelected = selectedRoutes.some(r => r.id === route.id);
-                
-                // Create a visual path for the climbing route - make it point slightly upward
-                // and in the direction of the peak from the landing zone
-                const routeIdHash = route.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 100;
-                
-                // Vary the direction slightly based on the route ID to avoid overlapping lines
-                const angle = (routeIdHash % 60) * (Math.PI / 180); // 0-59 degrees in radians
-                const distance = 0.008; // Length of the line
-                
-                const endPoint = {
-                  lat: route.coordinates.lat + (Math.sin(angle) * distance),
-                  lng: route.coordinates.lng + (Math.cos(angle) * distance)
-                };
-                
-                const routePath = [
-                  route.coordinates,
-                  endPoint
-                ];
-                
-                return (
-                  <React.Fragment key={route.id}>
-                    {/* Route marker */}
-                    <Marker
-                      position={route.coordinates}
-                      icon={{
-                        path: window.google.maps.SymbolPath.CIRCLE,
-                        fillColor: routeColor,
-                        fillOpacity: isSelected ? 1.0 : 0.8,
-                        strokeWeight: isSelected ? 3 : 2,
-                        strokeColor: isSelected ? '#FFFFFF' : '#DDDDDD',
-                        scale: isSelected ? 8 : 7
-                      }}
-                      onClick={() => handleMarkerClick(route)}
-                      zIndex={isSelected ? 5 : 3}
-                    />
-                    
-                    {/* Route line */}
-                    <Polyline
-                      path={routePath}
-                      options={{
-                        strokeColor: routeColor,
-                        strokeOpacity: isSelected ? 0.9 : 0.7,
-                        strokeWeight: isSelected ? 4 : 3
-                      }}
-                    />
-                  </React.Fragment>
-                );
-              })}
+              {/* Major Ruth Gorge Routes - Fixed static markers */}
+              {showAllRoutes && (
+                <>
+                  {/* Ham and Eggs - Moose's Tooth */}
+                  <Marker
+                    position={{ lat: 62.9086, lng: -150.0667 }}
+                    icon={{
+                      path: window.google.maps.SymbolPath.CIRCLE,
+                      fillColor: '#1976d2', // Classic route
+                      fillOpacity: 0.9,
+                      strokeWeight: 2,
+                      strokeColor: '#FFFFFF',
+                      scale: 7
+                    }}
+                    onClick={() => handleMarkerClick({
+                      id: 'ham-and-eggs',
+                      name: 'Ham and Eggs',
+                      peak: "Moose's Tooth",
+                      grade: "Grade V, 5.9 WI4",
+                      type: 'route',
+                      category: 'Classic',
+                      coordinates: { lat: 62.9086, lng: -150.0667 }
+                    })}
+                  />
+                  
+                  {/* Mt. Dickey - The Badlands */}
+                  <Marker
+                    position={{ lat: 62.9372, lng: -150.1967 }}
+                    icon={{
+                      path: window.google.maps.SymbolPath.CIRCLE,
+                      fillColor: '#00796b', // Modern Classic
+                      fillOpacity: 0.9,
+                      strokeWeight: 2,
+                      strokeColor: '#FFFFFF',
+                      scale: 7
+                    }}
+                    onClick={() => handleMarkerClick({
+                      id: 'the-badlands',
+                      name: 'The Badlands',
+                      peak: "Mount Dickey",
+                      grade: "Grade VI, 5.10 A2+",
+                      type: 'route',
+                      category: 'Modern Classic',
+                      coordinates: { lat: 62.9372, lng: -150.1967 }
+                    })}
+                  />
+                  
+                  {/* Mount Barille - Cobra Pillar */}
+                  <Marker
+                    position={{ lat: 62.9253, lng: -150.1883 }}
+                    icon={{
+                      path: window.google.maps.SymbolPath.CIRCLE,
+                      fillColor: '#7b1fa2', // Modern
+                      fillOpacity: 0.9,
+                      strokeWeight: 2,
+                      strokeColor: '#FFFFFF',
+                      scale: 7
+                    }}
+                    onClick={() => handleMarkerClick({
+                      id: 'cobra-pillar',
+                      name: 'Cobra Pillar',
+                      peak: "Mount Barille",
+                      grade: "Grade V, 5.11+ A2",
+                      type: 'route',
+                      category: 'Modern',
+                      coordinates: { lat: 62.9253, lng: -150.1883 }
+                    })}
+                  />
+                  
+                  {/* Mount Wake - The Climbing is Easy */}
+                  <Marker
+                    position={{ lat: 62.8814, lng: -150.2483 }}
+                    icon={{
+                      path: window.google.maps.SymbolPath.CIRCLE,
+                      fillColor: '#c62828', // Elite
+                      fillOpacity: 0.9,
+                      strokeWeight: 2,
+                      strokeColor: '#FFFFFF',
+                      scale: 7
+                    }}
+                    onClick={() => handleMarkerClick({
+                      id: 'climbing-is-easy',
+                      name: 'The Climbing is Easy',
+                      peak: "Mount Wake",
+                      grade: "Grade VI, 5.12 A3",
+                      type: 'route',
+                      category: 'Elite',
+                      coordinates: { lat: 62.8814, lng: -150.2483 }
+                    })}
+                  />
+                </>
+              )}
               
               {/* Info Window */}
               {selectedMarker && (
