@@ -226,118 +226,122 @@ const Calendar = ({ expeditionDates, setExpeditionDates, selectedRoutes }) => {
   const generateExampleItinerary = () => {
     if (!startDate || !endDate) return;
     
-    const start = startDate;
+    const baseTime = Date.now();
+    const start = dayjs(startDate); // Make sure we use a fresh copy and don't modify the original
     const newActivities = [];
     
-    // Add Anchorage arrival
+    // Find the selected routes
+    const blueCollarRoute = selectedRoutes.find(r => r.id === "blue-collar-beatdown");
+    const southwestRidgeRoute = selectedRoutes.find(r => r.id === "southwest-ridge");
+    
+    // April 25 - Day 1: Arrive in Anchorage
     newActivities.push({
-      id: Date.now(),
+      id: baseTime,
       date: start.format('YYYY-MM-DD'),
       type: 'travel',
       title: 'Arrive in Anchorage',
-      description: 'Flight arrival, collect bags, overnight in Anchorage',
+      description: 'Flight arrival, collect gear from REI and Alaska Mountaineering & Hiking, overnight in Anchorage',
       route: '',
     });
     
-    // Add travel to Talkeetna
+    // April 26 - Day 2: Travel to Talkeetna & Fly In
     newActivities.push({
-      id: Date.now() + 1,
+      id: baseTime + 1,
       date: start.add(1, 'day').format('YYYY-MM-DD'),
       type: 'travel',
-      title: 'Travel to Talkeetna',
-      description: 'Drive to Talkeetna, check in with air taxi, overnight in Talkeetna',
+      title: 'Travel to Talkeetna & Fly In',
+      description: 'Early drive to Talkeetna, check in with Talkeetna Air Taxi, fly directly to Ruth Gorge basecamp (4500ft), establish camp',
       route: '',
     });
     
-    // Add fly-in
+    // April 27 - Day 3: Prep for Blue Collar Beatdown
+    const day3 = dayjs(startDate).add(2, 'day');
     newActivities.push({
-      id: Date.now() + 2,
-      date: start.add(2, 'day').format('YYYY-MM-DD'),
-      type: 'fly-in',
-      title: 'Fly to Ruth Gorge',
-      description: 'Weather dependent flight to basecamp, establish camp',
-      route: '',
-    });
-    
-    // Add acclimatization day
-    newActivities.push({
-      id: Date.now() + 3,
-      date: start.add(3, 'day').format('YYYY-MM-DD'),
+      id: baseTime + 2,
+      date: day3.format('YYYY-MM-DD'),
       type: 'approach',
-      title: 'Acclimatization & Recon',
-      description: 'Glacier travel practice, route reconnaissance',
+      title: `Approach ${blueCollarRoute?.name || 'Blue Collar Beatdown'}`,
+      description: `Scout and prepare for ${blueCollarRoute?.name || 'Blue Collar Beatdown'} on Mt. Dickey. Pack climbing gear and prepare for alpine start.`,
+      route: 'blue-collar-beatdown',
+    });
+    
+    // April 28 - Day 4: Climb Blue Collar Beatdown Day 1
+    const day4 = dayjs(startDate).add(3, 'day');
+    newActivities.push({
+      id: baseTime + 3,
+      date: day4.format('YYYY-MM-DD'),
+      type: 'climb',
+      title: `Climb ${blueCollarRoute?.name || 'Blue Collar Beatdown'} Day 1`,
+      description: `Alpine start (2am). Begin climb of ${blueCollarRoute?.name || 'Blue Collar Beatdown'}. Establish bivy at ~7500ft if needed.`,
+      route: 'blue-collar-beatdown',
+    });
+    
+    // April 29 - Day 5: Climb Blue Collar Beatdown Day 2
+    const day5 = dayjs(startDate).add(4, 'day');
+    newActivities.push({
+      id: baseTime + 4,
+      date: day5.format('YYYY-MM-DD'),
+      type: 'climb',
+      title: `Climb ${blueCollarRoute?.name || 'Blue Collar Beatdown'} Day 2`,
+      description: `Complete climb of ${blueCollarRoute?.name || 'Blue Collar Beatdown'}. Summit and descend back to basecamp.`,
+      route: 'blue-collar-beatdown',
+    });
+    
+    // April 30 - Day 6: Rest Day
+    const day6 = dayjs(startDate).add(5, 'day');
+    newActivities.push({
+      id: baseTime + 5,
+      date: day6.format('YYYY-MM-DD'),
+      type: 'rest',
+      title: 'Rest Day',
+      description: 'Recovery day at basecamp. Jesse fixes splitboard issues. Daniel and Nicholas reorganize group gear for Southwest Ridge.',
       route: '',
     });
     
-    // Add climbing days for selected routes
-    let dayOffset = 4;
-    selectedRoutes.forEach((route, index) => {
-      // Add approach day
-      newActivities.push({
-        id: Date.now() + dayOffset,
-        date: start.add(dayOffset, 'day').format('YYYY-MM-DD'),
-        type: 'approach',
-        title: `Approach ${route.name}`,
-        description: `Ski/travel to base of ${route.name}`,
-        route: route.id,
-      });
-      
-      // Add climbing day(s) - assume 1-2 days depending on route grade
-      const climbDays = route.grade.includes('VI') ? 2 : 1;
-      for (let i = 0; i < climbDays; i++) {
-        newActivities.push({
-          id: Date.now() + dayOffset + i + 1,
-          date: start.add(dayOffset + i + 1, 'day').format('YYYY-MM-DD'),
-          type: 'climb',
-          title: `Climb ${route.name}`,
-          description: `Climbing day on ${route.name} (${route.grade}, ${route.technicalGrade})`,
-          route: route.id,
-        });
-      }
-      
-      // Add rest day after climbing
-      newActivities.push({
-        id: Date.now() + dayOffset + climbDays + 1,
-        date: start.add(dayOffset + climbDays + 1, 'day').format('YYYY-MM-DD'),
-        type: 'rest',
-        title: 'Rest Day',
-        description: 'Recovery day at basecamp',
-        route: '',
-      });
-      
-      dayOffset += climbDays + 2;
+    // May 1 - Day 7: Approach Southwest Ridge
+    const day7 = dayjs(startDate).add(6, 'day');
+    newActivities.push({
+      id: baseTime + 6,
+      date: day7.format('YYYY-MM-DD'),
+      type: 'approach',
+      title: `Approach ${southwestRidgeRoute?.name || 'Southwest Ridge'}`,
+      description: `Move to the base of ${southwestRidgeRoute?.name || 'Southwest Ridge'} of Mount Wake. Prepare for alpine start.`,
+      route: 'southwest-ridge',
     });
     
-    // Add weather contingency days
+    // May 2 - Day 8: Climb Southwest Ridge Day 1
+    const day8 = dayjs(startDate).add(7, 'day');
     newActivities.push({
-      id: Date.now() + dayOffset,
-      date: start.add(dayOffset, 'day').format('YYYY-MM-DD'),
-      type: 'weather-day',
-      title: 'Weather Contingency',
-      description: 'Extra day for weather delays',
-      route: '',
+      id: baseTime + 7,
+      date: day8.format('YYYY-MM-DD'),
+      type: 'climb',
+      title: `Climb ${southwestRidgeRoute?.name || 'Southwest Ridge'} Day 1`,
+      description: `Alpine start (1am). Begin climbing the ${southwestRidgeRoute?.name || 'Southwest Ridge'}. Establish high camp at First Col (8,800ft).`,
+      route: 'southwest-ridge',
     });
     
-    // Add fly-out
+    // May 3 - Day 9: Climb Southwest Ridge Day 2
+    const day9 = dayjs(startDate).add(8, 'day');
     newActivities.push({
-      id: Date.now() + dayOffset + 1,
-      date: start.add(dayOffset + 1, 'day').format('YYYY-MM-DD'),
+      id: baseTime + 8,
+      date: day9.format('YYYY-MM-DD'),
+      type: 'climb',
+      title: `Climb ${southwestRidgeRoute?.name || 'Southwest Ridge'} Day 2`,
+      description: `Summit day on ${southwestRidgeRoute?.name || 'Southwest Ridge'}. Reach Mount Wake summit (11,300ft) and descend to basecamp.`,
+      route: 'southwest-ridge',
+    });
+    
+    // May 4 - Day 10: Fly Out
+    const day10 = dayjs(startDate).add(9, 'day');
+    newActivities.push({
+      id: baseTime + 9,
+      date: day10.format('YYYY-MM-DD'),
       type: 'fly-out',
-      title: 'Fly from Ruth Gorge',
-      description: 'Weather dependent flight to Talkeetna',
+      title: 'Fly Out & Return Home',
+      description: 'Pack up camp. Radio for pickup. Fly to Talkeetna with gear. Team celebration dinner at Denali Brewing Company. Return to Anchorage for flights home.',
       route: '',
     });
-    
-    // Add travel home
-    newActivities.push({
-      id: Date.now() + dayOffset + 2,
-      date: start.add(dayOffset + 2, 'day').format('YYYY-MM-DD'),
-      type: 'travel',
-      title: 'Travel Home',
-      description: 'Flights from Anchorage',
-      route: '',
-    });
-    
+    // Set the activities
     setActivities(newActivities);
   };
   
