@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Maps API Test</title>
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Google Maps API Test</h2>
+  <p>This page tests if the Google Maps API key is working correctly.</p>
+  <div id="map"></div>
+
+  <script>
+    // Initialize and add the map
+    function initMap() {
+      console.log("Initializing map...");
+      // Ruth Gorge location
+      const ruthGorge = { lat: 62.9550, lng: -150.1700 };
+      
+      // The map, centered at Ruth Gorge
+      const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 10,
+        center: ruthGorge,
+        mapTypeId: "terrain"
+      });
+      
+      // A marker at Ruth Gorge
+      const marker = new google.maps.Marker({
+        position: ruthGorge,
+        map: map,
+        title: "Ruth Gorge, Alaska"
+      });
+      
+      console.log("Map initialization complete");
+    }
+
+    window.onerror = function(message, source, lineno, colno, error) {
+      document.body.innerHTML += '<div style="color: red; margin-top: 20px;"><strong>JavaScript Error:</strong><br>' + 
+        message + '<br>Line: ' + lineno + '</div>';
+      return true;
+    };
+  </script>
+
+  <!-- Google Maps API with your key -->
+  <script 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4z8Np9U2SScB0EIyJc4xJIiXVZUD9JjY&callback=initMap" 
+    async 
+    defer
+    onerror="document.body.innerHTML += '<div style=\'color: red; margin-top: 20px;\'><strong>Error:</strong> Failed to load the Google Maps API</div>';"
+  ></script>
+</body>
+</html>

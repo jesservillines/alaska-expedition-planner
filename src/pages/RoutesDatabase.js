@@ -39,7 +39,7 @@ const peakImageMap = {
   "Mount Barille": "https://www.mountainproject.com/assets/photos/climb/106354868_large_1494101053.jpg",
   "Mount Dickey": "https://www.mountainproject.com/assets/photos/climb/107268953_large_1494175789.jpg",
   "Peak 11,300": "https://i.ytimg.com/vi/s8fhh-ZM2D4/maxresdefault.jpg",
-  "Mount Wake": "https://i.ytimg.com/vi/s8fhh-ZM2D4/maxresdefault.jpg",
+  "Mount Kudlich": "https://i.ytimg.com/vi/s8fhh-ZM2D4/maxresdefault.jpg",
   "Mount Bradley": "https://www.alpenglowexpeditions.com/wp-content/uploads/2020/11/ruthgorge2-1300x650.jpg",
   "Werewolf Tower": "https://s3-ap-southeast-2.amazonaws.com/elasticbeanstalk-ap-southeast-2-678724467895/images/climbing/home_slides/alaska-ruth-gorge.jpg",
   "Mount Hunter": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/MountHunter.jpg/1200px-MountHunter.jpg",

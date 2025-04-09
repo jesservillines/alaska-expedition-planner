@@ -284,7 +284,7 @@ const routes = [
   {
     id: "southwest-ridge",
     name: "Southwest Ridge",
-    peak: "Peak 11,300 (Mount Wake)",
+    peak: "Peak 11,300 (Mount Kudlich)",
     elevation: 11300,
     grade: "Alaska Grade V",
     technicalGrade: "5.8 M4 60° snow",
@@ -309,7 +309,7 @@ const routes = [
   {
     id: "right-couloir",
     name: "Right Couloir",
-    peak: "Peak 11,300 (Mount Wake)",
+    peak: "Peak 11,300 (Mount Kudlich)",
     elevation: 11300,
     grade: "Alaska Grade V",
     technicalGrade: "AI4 WI4 M5 65° snow",

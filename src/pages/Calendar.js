@@ -305,7 +305,7 @@ const Calendar = ({ expeditionDates, setExpeditionDates, selectedRoutes }) => {
       date: day7.format('YYYY-MM-DD'),
       type: 'approach',
       title: `Approach ${southwestRidgeRoute?.name || 'Southwest Ridge'}`,
-      description: `Move to the base of ${southwestRidgeRoute?.name || 'Southwest Ridge'} of Mount Wake. Prepare for alpine start.`,
+      description: `Move to the base of ${southwestRidgeRoute?.name || 'Southwest Ridge'} of Mount Kudlich. Prepare for alpine start.`,
       route: 'southwest-ridge',
     });
     
@@ -327,7 +327,7 @@ const Calendar = ({ expeditionDates, setExpeditionDates, selectedRoutes }) => {
       date: day9.format('YYYY-MM-DD'),
       type: 'climb',
       title: `Climb ${southwestRidgeRoute?.name || 'Southwest Ridge'} Day 2`,
-      description: `Summit day on ${southwestRidgeRoute?.name || 'Southwest Ridge'}. Reach Mount Wake summit (11,300ft) and descend to basecamp.`,
+      description: `Summit day on ${southwestRidgeRoute?.name || 'Southwest Ridge'}. Reach Mount Kudlich summit (11,300ft) and descend to basecamp.`,
       route: 'southwest-ridge',
     });
     

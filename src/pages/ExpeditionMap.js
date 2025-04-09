@@ -81,7 +81,7 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
       case 'Mountain House/Sheldon Amphitheater':
         return 'Mount Huntington';
       case 'West Fork Ruth':
-        return 'Mount Wake';
+        return 'Mount Kudlich';
       case 'Ruth Glacier':
         return 'Mount Barille';
       case 'Pika Glacier/Little Switzerland':
@@ -119,7 +119,7 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
       "Mount Dickey": { lat: 62.9372, lng: -150.1967 }, // Updated
       "Mount Barille": { lat: 62.9253, lng: -150.1883 }, // Updated
       "Mount Huntington": { lat: 62.8656, lng: -150.2833 }, // Updated
-      "Mount Wake": { lat: 62.8814, lng: -150.2483 }, // Updated
+      "Mount Kudlich": { lat: 62.8814, lng: -150.2483 }, // Updated
       "London Tower": { lat: 62.9261, lng: -150.1692 }, // Updated
       "Mount Bradley": { lat: 62.9189, lng: -150.1789 }, // Updated
       "Mount Johnson": { lat: 62.9181, lng: -150.2122 }, // Updated
@@ -483,7 +483,7 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
                     })}
                   />
                   
-                  {/* Mount Wake - The Climbing is Easy */}
+                  {/* Mount Kudlich - The Climbing is Easy */}
                   <Marker
                     position={{ lat: 62.8814, lng: -150.2483 }}
                     icon={{
@@ -497,7 +497,7 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
                     onClick={() => handleMarkerClick({
                       id: 'climbing-is-easy',
                       name: 'The Climbing is Easy',
-                      peak: "Mount Wake",
+                      peak: "Mount Kudlich",
                       grade: "Grade VI, 5.12 A3",
                       type: 'route',
                       category: 'Elite',
