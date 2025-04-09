@@ -89,6 +89,15 @@ const Calendar = ({ expeditionDates, setExpeditionDates, selectedRoutes }) => {
     }
   }, [startDate, endDate, setExpeditionDates]);
   
+  // Auto-generate example itinerary when component mounts with selected routes
+  useEffect(() => {
+    // Only generate if we have routes selected and no activities yet
+    if (selectedRoutes && selectedRoutes.length > 0 && activities.length === 0) {
+      // Call the example itinerary function as if the button was pressed
+      generateExampleItinerary();
+    }
+  }, [selectedRoutes, activities.length]);
+  
   // Generate days for the current month view
   useEffect(() => {
     const firstDayOfMonth = dayjs().year(currentYear).month(currentMonth).startOf('month');
