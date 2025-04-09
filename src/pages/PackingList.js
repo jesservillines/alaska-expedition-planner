@@ -73,8 +73,39 @@ const PackingList = () => {
     }, {})
   );
   
-  // Climber profile states
-  const [selectedClimbers, setSelectedClimbers] = useState([]);
+  // Climber profile states - pre-selecting the expedition team members
+  const [selectedClimbers, setSelectedClimbers] = useState(() => {
+    // Find the specific team members by name
+    const jesseVillines = climberProfiles.find(c => c.name === "Jesse Villines") || {
+      id: "jesse-villines",
+      name: "Jesse Villines",
+      nickname: "Badger",
+      role: "Alpinist Splitboarder",
+      weight: 75,
+      gear: ["Jones Ultralight Butterfly splitboard", "Phantom hardboot setup", "4-season tent", "MSR Reactor stove"]
+    };
+    
+    const danielBlumberg = climberProfiles.find(c => c.name === "Daniel Blumberg") || {
+      id: "daniel-blumberg",
+      name: "Daniel Blumberg",
+      nickname: "Team Twink",
+      role: "Mountain Athlete",
+      weight: 68,
+      gear: ["Blizzard Zero G 85 Skis", "Scarpa F1 XT Ski Boots", "La Sportiva G2 Evo 6000m Boots", "Rab Latok tent"]
+    };
+    
+    const nicholasWright = climberProfiles.find(c => c.name === "Nicholas Wright") || {
+      id: "nicholas-wright",
+      name: "Nicholas Wright",
+      nickname: "Raw Dawg",
+      role: "Alpine Crusher",
+      weight: 82,
+      gear: ["Blizzard Zero G 85 Skis", "Maestrale boots", "Sled/pulk", "Ropes", "Group cooking gear"]
+    };
+    
+    // Return the pre-selected team
+    return [jesseVillines, danielBlumberg, nicholasWright];
+  });
   const [viewMode, setViewMode] = useState('team'); // 'team' or 'individual'
   const [activeClimber, setActiveClimber] = useState(null);
   
