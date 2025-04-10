@@ -22,6 +22,7 @@ import { useLoadScript, GoogleMap, Marker, Polyline, InfoWindow } from '@react-g
 
 import routes from '../data/routes';
 import logistics from '../data/logistics';
+import { routeCoordinates, peakCoordinates, landingZoneCoordinates } from '../data/coordinates';
 
 // Container style for the Google Map
 const mapContainerStyle = {
@@ -111,23 +112,15 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
     }
   }
   
-  // Get coordinates for routes based on their peak and landing zone
+  // Get coordinates for routes based on their route ID or peak/landing zone as fallback
   function getRouteCoordinates(route) {
-    // Base coordinates for the major peaks - updated with more accurate coordinates
-    const peakCoordinates = {
-      "Moose's Tooth": { lat: 62.9086, lng: -150.0667 }, // Updated
-      "Mount Dickey": { lat: 62.9372, lng: -150.1967 }, // Updated
-      "Mount Barille": { lat: 62.9253, lng: -150.1883 }, // Updated
-      "Mount Huntington": { lat: 62.8656, lng: -150.2833 }, // Updated
-      "Mount Kudlich": { lat: 62.8814, lng: -150.2483 }, // Updated
-      "London Tower": { lat: 62.9261, lng: -150.1692 }, // Updated
-      "Mount Bradley": { lat: 62.9189, lng: -150.1789 }, // Updated
-      "Mount Johnson": { lat: 62.9181, lng: -150.2122 }, // Updated
-      "The Wisdom Tooth": { lat: 62.9075, lng: -150.0750 }, // Updated
-      "Mount Dan Beard": { lat: 62.9489, lng: -150.1925 }  // Updated
-    };
+    // First check if we have precise route coordinates in our data file
+    if (route.id && routeCoordinates[route.id]) {
+      // Use the summit coordinates by default for markers
+      return routeCoordinates[route.id].summit;
+    }
     
-    // If we have coordinates for the route's peak, use those
+    // If no route-specific coordinates, fallback to peak coordinates
     if (route.peak && peakCoordinates[route.peak]) {
       // Add a small random offset to prevent routes on the same peak from overlapping exactly
       const routeIdHash = route.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 100;
@@ -144,31 +137,15 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
     
     // If we have information about the landing zone, use that as a fallback
     if (route.landingZone) {
-      // Map landing zone names to coordinates directly to avoid circular references
-      const landingZoneMap = {
-        'Root Canal': { lat: 62.9175, lng: -150.0800 },
-        'Ruth Gorge Basecamp': { lat: 62.9470, lng: -150.1700 },
-        'Mountain House': { lat: 62.9200, lng: -150.2400 },
-        'West Fork Ruth': { lat: 62.9350, lng: -150.2250 },
-        'Ruth Glacier': { lat: 62.9450, lng: -150.1750 },
-        'Pika Glacier': { lat: 62.8800, lng: -150.1950 }
-      };
-      
       // Find the right landing zone coordinates
-      let landingZoneCoords;
-      for (const [key, coords] of Object.entries(landingZoneMap)) {
+      for (const [key, coords] of Object.entries(landingZoneCoordinates)) {
         if (route.landingZone.includes(key)) {
-          landingZoneCoords = coords;
-          break;
+          // Add a small offset to distinguish it from the landing zone marker
+          return {
+            lat: coords.lat + 0.005,
+            lng: coords.lng + 0.003
+          };
         }
-      }
-      
-      // If we found coordinates, use them with an offset
-      if (landingZoneCoords) {
-        return {
-          lat: landingZoneCoords.lat + 0.005,
-          lng: landingZoneCoords.lng + 0.003
-        };
       }
     }
     
