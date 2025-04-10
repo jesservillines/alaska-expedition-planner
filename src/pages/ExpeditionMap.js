@@ -24,6 +24,9 @@ import routes from '../data/routes';
 import logistics from '../data/logistics';
 import { routeCoordinates, peakCoordinates, landingZoneCoordinates } from '../data/coordinates';
 
+// Coordinate conversion factor - adjusts the accurate GPS coordinates to match the map's expected format
+const LONGITUDE_ADJUSTMENT = 0.5616; // This factor adjusts the longitudes to match the map coordinate system
+
 // Container style for the Google Map
 const mapContainerStyle = {
   width: '100%',
@@ -94,21 +97,56 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
 
   // Landing zone coordinates (using accurate coordinate system)
   function getLandingZoneCoordinates(zoneName) {
+    // First try to get coordinates from our accurate coordinates file
+    let coords;
+    
     switch(zoneName) {
       case 'Ruth Gorge Basecamp (Donnelly Landing)':
-        return { lat: 62.9372, lng: -150.1933 }; // Updated
+        coords = landingZoneCoordinates["Ruth Gorge Basecamp"];
+        break;
       case 'Root Canal (Moose\'s Tooth)':
-        return { lat: 62.9125, lng: -150.0667 }; // Updated
+        coords = landingZoneCoordinates["Root Canal"];
+        break;
       case 'Mountain House/Sheldon Amphitheater':
-        return { lat: 62.8302, lng: -150.2167 }; // Updated
+        coords = landingZoneCoordinates["Mountain House"];
+        break;
       case 'West Fork Ruth':
-        return { lat: 62.8813, lng: -150.2533 }; // Updated
-      case 'Ruth Glacier':
-        return { lat: 62.9053, lng: -150.1918 }; // Updated
+        coords = landingZoneCoordinates["West Fork Ruth"];
+        break;
+      case 'Northwest Fork Ruth':
+        coords = landingZoneCoordinates["Northwest Fork Ruth"];
+        break;
       case 'Pika Glacier/Little Switzerland':
-        return { lat: 62.8267, lng: -150.1800 }; // Updated
+        coords = landingZoneCoordinates["Pika Glacier"];
+        break;
       default:
-        return { lat: 62.9053, lng: -150.1900 }; // Updated central point
+        return { lat: 62.9053, lng: -150.1900 }; // Already in map's coordinate system
+    }
+    
+    // Apply the longitude adjustment for map compatibility
+    if (coords) {
+      return {
+        lat: coords.lat,
+        lng: coords.lng + LONGITUDE_ADJUSTMENT
+      };
+    }
+    
+    // Fallback to old coordinates if needed
+    switch(zoneName) {
+      case 'Ruth Gorge Basecamp (Donnelly Landing)':
+        return { lat: 62.9372, lng: -150.1933 };
+      case 'Root Canal (Moose\'s Tooth)':
+        return { lat: 62.9125, lng: -150.0667 };
+      case 'Mountain House/Sheldon Amphitheater':
+        return { lat: 62.8302, lng: -150.2167 };
+      case 'West Fork Ruth':
+        return { lat: 62.8813, lng: -150.2533 };
+      case 'Ruth Glacier':
+        return { lat: 62.9053, lng: -150.1918 };
+      case 'Pika Glacier/Little Switzerland':
+        return { lat: 62.8267, lng: -150.1800 };
+      default:
+        return { lat: 62.9053, lng: -150.1900 };
     }
   }
   
@@ -116,8 +154,12 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
   function getRouteCoordinates(route) {
     // First check if we have precise route coordinates in our data file
     if (route.id && routeCoordinates[route.id]) {
-      // Use the summit coordinates by default for markers
-      return routeCoordinates[route.id].summit;
+      // Use the summit coordinates by default for markers, but adjust the longitude for map compatibility
+      const coords = routeCoordinates[route.id].summit;
+      return {
+        lat: coords.lat,
+        lng: coords.lng + LONGITUDE_ADJUSTMENT
+      };
     }
     
     // If no route-specific coordinates, fallback to peak coordinates
@@ -150,7 +192,7 @@ const ExpeditionMap = ({ selectedRoutes, setSelectedRoutes }) => {
     }
     
     // Default coordinates for the Ruth Gorge area if we can't determine a better location
-    return { lat: 62.9350, lng: -150.1800 };
+    return { lat: 62.9350, lng: -150.1800 }; // These are already in the map's coordinate system
   }
 
   // Handle marker click to show info window
