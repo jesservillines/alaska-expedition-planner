@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Box, Typography, Paper, CircularProgress } from '@mui/material';
+import { routeCoordinates, peakCoordinates, landingZoneCoordinates } from '../data/coordinates';
 
 function SimpleMap() {
   const mapRef = useRef(null);
@@ -17,18 +18,88 @@ function SimpleMap() {
     window.initMap = function() {
       try {
         if (mapRef.current) {
+          // Use the Ruth Gorge Basecamp coordinates from our accurate coordinates file
+          // Apply the same longitude adjustment as in ExpeditionMap.js for consistency
+          const LONGITUDE_ADJUSTMENT = 0.5616;
+          const ruthGorgeCoords = landingZoneCoordinates["Ruth Gorge Basecamp"];
+          const adjustedCoords = {
+            lat: ruthGorgeCoords.lat,
+            lng: ruthGorgeCoords.lng + LONGITUDE_ADJUSTMENT
+          };
+          
           const map = new window.google.maps.Map(mapRef.current, {
-            center: { lat: 62.9550, lng: -150.1700 },
+            center: adjustedCoords,
             zoom: 10,
             mapTypeId: 'terrain'
           });
           
-          // Add a marker
+          // Add a marker at Ruth Gorge Basecamp
           new window.google.maps.Marker({
-            position: { lat: 62.9550, lng: -150.1700 },
+            position: adjustedCoords,
             map: map,
-            title: 'Ruth Gorge'
+            title: 'Ruth Gorge Basecamp'
           });
+          
+          // Add markers for key mountains
+          Object.entries(peakCoordinates).forEach(([peakName, coords]) => {
+            if (['Mount Kudlich', 'Moose\'s Tooth', 'Mount Dickey'].includes(peakName)) {
+              new window.google.maps.Marker({
+                position: {
+                  lat: coords.lat,
+                  lng: coords.lng + LONGITUDE_ADJUSTMENT
+                },
+                map: map,
+                title: peakName,
+                icon: {
+                  path: window.google.maps.SymbolPath.CIRCLE,
+                  scale: 7,
+                  fillColor: '#FF5722',
+                  fillOpacity: 0.9,
+                  strokeWeight: 1
+                }
+              });
+            }
+          });
+          
+          // Add Blue Collar Beatdown and Southwest Ridge routes
+          const blueCollarCoords = routeCoordinates['blue-collar-beatdown'];
+          const southwestRidgeCoords = routeCoordinates['southwest-ridge'];
+          
+          if (blueCollarCoords) {
+            new window.google.maps.Marker({
+              position: {
+                lat: blueCollarCoords.summit.lat,
+                lng: blueCollarCoords.summit.lng + LONGITUDE_ADJUSTMENT
+              },
+              map: map,
+              title: 'Blue Collar Beatdown',
+              icon: {
+                path: window.google.maps.SymbolPath.CIRCLE,
+                scale: 6,
+                fillColor: '#4CAF50',
+                fillOpacity: 0.9,
+                strokeWeight: 1
+              }
+            });
+          }
+          
+          if (southwestRidgeCoords) {
+            new window.google.maps.Marker({
+              position: {
+                lat: southwestRidgeCoords.summit.lat,
+                lng: southwestRidgeCoords.summit.lng + LONGITUDE_ADJUSTMENT
+              },
+              map: map,
+              title: 'Southwest Ridge',
+              icon: {
+                path: window.google.maps.SymbolPath.CIRCLE,
+                scale: 6,
+                fillColor: '#4CAF50',
+                fillOpacity: 0.9,
+                strokeWeight: 1
+              }
+            });
+          }
           
           console.log("Map initialized successfully");
           setIsLoading(false);
