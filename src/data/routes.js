@@ -562,6 +562,158 @@ const routes = [
     },
     category: "Classic",
     image: "mini-moonflower.jpg"
+  },
+
+  // Mount Huntington Routes
+  {
+    id: "harvard-route",
+    name: "Harvard Route",
+    peak: "Mount Huntington",
+    elevation: 12240,
+    grade: "Alaska Grade V",
+    technicalGrade: "5.9 R/A1",
+    verticalGain: 4500,
+    pitches: 25,
+    type: "Alpine Mixed (Rock/Ice)",
+    firstAscent: "1970s, Harvard Mountaineering Club",
+    characteristics: "A historical classic established in the 1970s, featuring sustained mixed climbing on granite with intermittent ice sections. The route follows a prominent face and has well-documented beta.",
+    crux: "Several exposed 5.9 pitches with limited protection options on granite face",
+    trafficLevel: "Moderate – one of the better‐known routes; occasionally repeated by experienced teams",
+    landingZone: "Ruth Glacier",
+    approach: "Typically accessed via a fly-in to the Ruth Glacier followed by a short ski/hike to the Huntington base",
+    conditionWindow: "Late April/early May: cold enough to keep ice firm yet open for mixed climbing; may see some snowmelt at lower sections",
+    notes: "A true Alaskan classic with historical significance. Route finding can be challenging in poor visibility.",
+    coordinates: {
+      lat: 62.9350,
+      lng: -150.8750
+    },
+    category: "Classic",
+    image: "huntington-harvard.jpg"
+  },
+  {
+    id: "lowell-pillar",
+    name: "Lowell Pillar",
+    peak: "Mount Huntington",
+    elevation: 12240,
+    grade: "Alaska Grade IV",
+    technicalGrade: "5.7 A0",
+    verticalGain: 3300,
+    pitches: 18,
+    type: "Alpine Rock (Free/Mixed)",
+    firstAscent: "1980s",
+    characteristics: "A less-committed, more direct rock route up a prominent pillar on Huntington's face. Offers mostly free climbing with some optional aid moves in poorer sections. Relatively well-protected with established gear placements.",
+    crux: "Aid moves around A0 with limited protection in a few sections",
+    trafficLevel: "Fair – more popular with climbing parties seeking an 'intro' to Huntington's vertical potential; modest traffic in spring",
+    landingZone: "Ruth Glacier",
+    approach: "Land on Ruth Glacier via ski plane, then traverse to the base of the Lowell Pillar (short hike/ski of ~30–45 min)",
+    conditionWindow: "Early spring (late April) works well—cool, with crisp granite; however, some pitches may be iced or snowy early in season",
+    notes: "Consider this a good introduction to Mount Huntington for parties with solid alpine rock skills but less experience with harder mixed climbing.",
+    coordinates: {
+      lat: 62.9340,
+      lng: -150.8730
+    },
+    category: "Classic",
+    image: "huntington-lowell.jpg"
+  },
+  {
+    id: "cave-of-the-winds",
+    name: "Cave of the Winds",
+    peak: "Mount Huntington",
+    elevation: 12240,
+    grade: "Alaska Grade V",
+    technicalGrade: "WI4 M4",
+    verticalGain: 3600,
+    pitches: 20,
+    type: "Alpine Mixed (Couloir/Ice)",
+    firstAscent: "1990s",
+    characteristics: "Climbs a steep, narrow couloir that starts with 5–10 pitches of firm, steep ice and transitions into mixed climbing. The route's namesake comes from a dramatic snow cave formation mid-route, offering unique beta.",
+    crux: "Navigating through the cave formation requires technical mixed climbing on delicate ice features",
+    trafficLevel: "Low – a demanding mixed line that rarely sees repeats; few elite teams will attempt in early season conditions",
+    landingZone: "Ruth or West Fork Glacier",
+    approach: "Fly to Ruth or West Fork; approach across glacier terrain to the couloir base—usually a 45–60‑min ski or hike",
+    conditionWindow: "Late April: best with very cold nights to ensure icy conditions in the couloir; by May, warming may render ice less reliable",
+    notes: "The cave formation provides a natural shelter in case of deteriorating weather, but can also present technical challenges depending on seasonal snow accumulation.",
+    coordinates: {
+      lat: 62.9345,
+      lng: -150.8745
+    },
+    category: "Modern",
+    image: "huntington-cave.jpg"
+  },
+  {
+    id: "mcmurdo-74",
+    name: "McMurdo '74",
+    peak: "Mount Huntington",
+    elevation: 12240,
+    grade: "Alaska Grade V",
+    technicalGrade: "5.8 R",
+    verticalGain: 4300,
+    pitches: 22,
+    type: "Alpine Mixed (Rock/Ice)",
+    firstAscent: "1974, McMurdo Expedition",
+    characteristics: "A route that mixes free climbing on solid granite with intermittent ice sections. Established in the 1970s, it is celebrated for its clean beta and 'old-school' style, making it a favorite for purists.",
+    crux: "Several pitches of 5.8 with runout sections on the upper face",
+    trafficLevel: "Moderate–low – while known historically, it receives fewer ascents these days; in spring, parties are sporadic",
+    landingZone: "Ruth Glacier",
+    approach: "Approached from the Ruth Glacier via a fly-in; a 30‑ to 45‑min traverse on glacier terrain leads to the route's start",
+    conditionWindow: "Late April works if freezing conditions prevail overnight; may become less technical with early snowmelt later in May",
+    notes: "The route has historical significance and follows a logical line up the mountain. Some anchors may need reinforcement, so bring adequate gear for building stations.",
+    coordinates: {
+      lat: 62.9335,
+      lng: -150.8755
+    },
+    category: "Classic",
+    image: "huntington-mcmurdo.jpg"
+  },
+  {
+    id: "everest-express",
+    name: "Everest Express",
+    peak: "Mount Huntington",
+    elevation: 12240,
+    grade: "Alaska Grade VI",
+    technicalGrade: "WI5 A2 M6",
+    verticalGain: 5250,
+    pitches: 30,
+    type: "Alpine Mixed (Ice/Mixed)",
+    firstAscent: "2000s, International Team",
+    characteristics: "A modern, committed mixed line with sustained WI5 ice sections and intermittent M6 mixed moves. It requires careful route-finding across steep couloirs on Huntington's exposed face.",
+    crux: "Several pitches of WI5 ice on the headwall, followed by M6 mixed moves on the upper face",
+    trafficLevel: "Very low – highly challenging and technical; generally attempted only by leading mixed climbers",
+    landingZone: "Ruth Glacier",
+    approach: "Fly-in access to the Ruth Glacier; then a short ski approach (approx. 45 min) to reach the exposed face base",
+    conditionWindow: "Late April to very early May when winter conditions persist; later in season the steep ice may melt out or become slushy",
+    notes: "One of the most technically demanding routes on Huntington. Requires a strong team with extensive experience in WI5+ ice and M6 mixed terrain. Plan for potential bivouacs.",
+    coordinates: {
+      lat: 62.9360,
+      lng: -150.8735
+    },
+    category: "Elite",
+    image: "huntington-everest.jpg"
+  },
+  {
+    id: "the-frontier",
+    name: "The Frontier",
+    peak: "Mount Huntington",
+    elevation: 12240,
+    grade: "Alaska Grade IV-V",
+    technicalGrade: "5.8",
+    verticalGain: 3300,
+    pitches: 17,
+    type: "Alpine Rock (Free/Sport Mixed)",
+    firstAscent: "1990s",
+    characteristics: "A popular, less-committed route featuring sustained free climbing on solid, clean granite. Occasional mixed moves are possible if weather changes conditions. Beta is well established and supportive of beginners to Huntington.",
+    crux: "Continuous 5.7-5.8 climbing on the upper face with some exposed sections",
+    trafficLevel: "Fair – one of the more frequently repeated routes on Huntington; moderate traffic among guided and experienced parties",
+    landingZone: "Ruth Glacier",
+    approach: "Accessed similarly via a fly-in to the Ruth Glacier and a brief traverse to Huntington's central face",
+    conditionWindow: "Late April–May: ideally when rock is dry yet remains cool enough to prevent overheating; some spring snow may still be present",
+    notes: "Good option for teams looking to experience Huntington with more emphasis on rock climbing than ice/mixed. Bring a standard alpine rack with emphasis on protection for granite cracks.",
+    coordinates: {
+      lat: 62.9345,
+      lng: -150.8740
+    },
+    category: "Classic",
+    image: "huntington-frontier.jpg"
   }
 ];
 
