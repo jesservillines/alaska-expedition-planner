@@ -19,6 +19,7 @@ import Calendar from './pages/Calendar';
 import SimpleBudgetCalculator from './pages/SimpleBudgetCalculator';
 import PackingList from './pages/PackingList';
 import LogisticsInfo from './pages/LogisticsInfo';
+import VolcanicRisks from './pages/VolcanicRisks';
 import MapTest from './components/MapTest';
 import SimpleMap from './components/SimpleMap';
 
@@ -97,6 +98,7 @@ function App() {
             setTeamMembers={setTeamMembers}
           />} />
           <Route path="/logistics" element={<LogisticsInfo />} />
+          <Route path="/volcanic-risks" element={<VolcanicRisks />} />
         </Routes>
       </Box>
       <Footer />

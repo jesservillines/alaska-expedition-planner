@@ -24,6 +24,7 @@ import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ChecklistIcon from '@mui/icons-material/ChecklistRtl';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import WarningIcon from '@mui/icons-material/Warning';
 
 const navItems = [
   { path: '/', label: 'Dashboard', icon: <DashboardIcon /> },
@@ -34,6 +35,7 @@ const navItems = [
   { path: '/budget', label: 'Budget', icon: <AccountBalanceWalletIcon /> },
   { path: '/packing', label: 'Packing List', icon: <ChecklistIcon /> },
   { path: '/logistics', label: 'Logistics', icon: <FlightTakeoffIcon /> },
+  { path: '/volcanic-risks', label: 'Volcanic Risks', icon: <WarningIcon /> },
 ];
 
 const Navigation = () => {
