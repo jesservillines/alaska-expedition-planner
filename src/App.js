@@ -20,6 +20,7 @@ import SimpleBudgetCalculator from './pages/SimpleBudgetCalculator';
 import PackingList from './pages/PackingList';
 import LogisticsInfo from './pages/LogisticsInfo';
 import VolcanicRisks from './pages/VolcanicRisks';
+import AlaskaClimbing from './pages/AlaskaClimbing';
 import MapTest from './components/MapTest';
 import SimpleMap from './components/SimpleMap';
 
@@ -99,6 +100,7 @@ function App() {
           />} />
           <Route path="/logistics" element={<LogisticsInfo />} />
           <Route path="/volcanic-risks" element={<VolcanicRisks />} />
+          <Route path="/climbing" element={<AlaskaClimbing />} />
         </Routes>
       </Box>
       <Footer />

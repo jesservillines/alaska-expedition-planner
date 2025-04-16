@@ -21,8 +21,8 @@ const routes = [
     conditionWindow: "Late April to early May for optimal conditions. Earlier can be too cold; later risks melting ice and rockfall.",
     notes: "By May, the couloir can get sloppy in warm weather – deep slush or running water – and rockfall from sun-hit walls becomes a concern. Extremely popular route with multiple parties during prime season.",
     coordinates: {
-      lat: 62.9175,
-      lng: -150.0667
+      lat: 62.96917,
+      lng: -150.61333
     },
     category: "Classic",
     image: "mooses-tooth-ham-eggs.jpg"
@@ -46,8 +46,8 @@ const routes = [
     conditionWindow: "Mid-April to early May - condition dependent and needs proper freeze-thaw cycles",
     notes: "Often thin ice - very condition dependent. Serious alpine ice climbing (WI5) with mixed moves; fewer ascents than Ham and Eggs.",
     coordinates: {
-      lat: 62.9175,
-      lng: -150.0670
+      lat: 62.96917,
+      lng: -150.61333
     },
     category: "Modern Classic",
     image: "mooses-tooth-shaken.jpg"
@@ -72,8 +72,8 @@ const routes = [
     conditionWindow: "Late April to early May - needs cold conditions to maintain good ice quality",
     notes: "The couloir leads to a notch on Barille's summit ridge. Many parties rappel from this notch, but one can continue by traversing and climbing easy snow to the true summit via the West Ridge.",
     coordinates: {
-      lat: 62.9750, 
-      lng: -150.1903
+      lat: 62.96676, 
+      lng: -150.72130
     },
     category: "Classic",
     image: "barille-japanese.jpg"
@@ -98,8 +98,8 @@ const routes = [
     conditionWindow: "April - requires early, firm conditions",
     notes: "Narrow couloir with multiple ice steps; avalanche risk high. Descent is by rappelling the route; expect ~8–11 rappels, some off rock anchors, due to the route's length and winding nature.",
     coordinates: {
-      lat: 62.9667, 
-      lng: -150.1833
+      lat: 62.92500, 
+      lng: -150.65000
     },
     category: "Modern",
     image: "werewolf-freezy.jpg"
@@ -124,8 +124,8 @@ const routes = [
     conditionWindow: "Late April to June for rock routes - requires stable high-pressure weather",
     notes: "Massive commitment - first ascent took 7 days. Complex descent via the West Ridge and 747 Pass. Very rarely attempted due to extreme difficulty and commitment required.",
     coordinates: {
-      lat: 62.9551,
-      lng: -150.1656
+      lat: 62.94627,
+      lng: -150.72164
     },
     category: "Elite",
     image: "dickey-wine-bottle.jpg"
@@ -149,8 +149,8 @@ const routes = [
     conditionWindow: "Early season only (March-April) for ice conditions",
     notes: "Unrepeated as of 2025. The team described 'at least a dozen' pitch-length puzzles where they weren't sure a passage would go. Descent via West Face to 747 Pass.",
     coordinates: {
-      lat: 62.9551,
-      lng: -150.1658
+      lat: 62.94627,
+      lng: -150.72164
     },
     category: "Elite",
     image: "dickey-blood-stone.jpg"
@@ -174,8 +174,8 @@ const routes = [
     conditionWindow: "Best in mid-summer (June) for dry rock; Apr–May may be cold/wet",
     notes: "One of the first major big wall routes in the Ruth Gorge and a significant climb in Alaskan mountaineering history. Primarily a rock climb requiring warm conditions.",
     coordinates: {
-      lat: 62.9545,
-      lng: -150.1645
+      lat: 62.94627,
+      lng: -150.72164
     },
     category: "Classic",
     image: "dickey-southeast-face.jpg"
@@ -199,8 +199,8 @@ const routes = [
     conditionWindow: "Climbable from late March to mid-April when ice is solid",
     notes: "Major objective hazards from spindrift avalanches. Teams should be prepared for sustained difficult ice climbing in a serious alpine environment with limited retreat options.",
     coordinates: {
-      lat: 62.9548,
-      lng: -150.1620
+      lat: 62.94627,
+      lng: -150.72164
     },
     category: "Modern",
     image: "dickey-snowpatrol.jpg"
@@ -224,8 +224,8 @@ const routes = [
     conditionWindow: "Best in early spring (late March–April) with cold, stable conditions",
     notes: "A serious modern mixed line requiring strong ice and mixed climbing skills. Descent typically via the West Face/747 Pass. The name is a tongue-in-cheek reference to the commitment required.",
     coordinates: {
-      lat: 62.9551,
-      lng: -150.1640
+      lat: 62.94627,
+      lng: -150.72164
     },
     category: "Elite",
     image: "dickey-aim-bushes.jpg"
@@ -249,8 +249,8 @@ const routes = [
     conditionWindow: "Best in late winter/early spring (late March) when the snow is consolidated",
     notes: "The 'beatdown' nature comes from the physical demands of deep snow and constant spindrift. A good intermediate-level objective for teams moving up to bigger Alaska Range routes.",
     coordinates: {
-      lat: 62.9560,
-      lng: -150.1630
+      lat: 62.94627,
+      lng: -150.72164
     },
     category: "Classic",
     image: "dickey-blue-collar.jpg"
@@ -274,8 +274,8 @@ const routes = [
     conditionWindow: "Late May to June for dry rock conditions",
     notes: "A superb rock climb with stunning views of the Ruth Gorge. Requires strong crack climbing skills and comfort on steep exposed terrain. Camping on the route is difficult - most parties climb it in a single long push.",
     coordinates: {
-      lat: 62.9755, 
-      lng: -150.1910
+      lat: 62.96676, 
+      lng: -150.72130
     },
     category: "Classic",
     image: "barille-right-corner.jpg"
@@ -300,8 +300,8 @@ const routes = [
     conditionWindow: "Late April to early May - cold enough for firm snow and safe cornices",
     notes: "A true alpine journey with steep snow, rock towers, and corniced knife-edge ridge sections. Often done with 1–2 bivouacs (at 8,800ft 'First Col' and 10,000ft 'Second Col').",
     coordinates: {
-      lat: 62.9430,
-      lng: -150.2320
+      lat: 63.00250,
+      lng: -150.87722
     },
     category: "Classic",
     image: "wake-sw-ridge.jpg"
@@ -325,8 +325,8 @@ const routes = [
     conditionWindow: "Mid-April to early May - ideal for maintaining thick, firm ice",
     notes: "Called a 'hidden gem' that saw essentially no ascents for decades. Finishes with an exposed corniced ridge traverse before joining the summit.",
     coordinates: {
-      lat: 62.9430,
-      lng: -150.2325
+      lat: 63.00250,
+      lng: -150.87722
     },
     category: "Obscure",
     image: "wake-right-couloir.jpg"

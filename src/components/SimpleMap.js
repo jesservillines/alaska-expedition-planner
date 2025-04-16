@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Box, Typography, Paper, CircularProgress } from '@mui/material';
 import { routeCoordinates, peakCoordinates, landingZoneCoordinates } from '../data/coordinates';
+import routes from '../data/routes';
 
 function SimpleMap() {
   const mapRef = useRef(null);
@@ -61,45 +62,45 @@ function SimpleMap() {
             }
           });
           
-          // Add Blue Collar Beatdown and Southwest Ridge routes
-          const blueCollarCoords = routeCoordinates['blue-collar-beatdown'];
-          const southwestRidgeCoords = routeCoordinates['southwest-ridge'];
-          
-          if (blueCollarCoords) {
-            new window.google.maps.Marker({
-              position: {
-                lat: blueCollarCoords.summit.lat,
-                lng: blueCollarCoords.summit.lng + LONGITUDE_ADJUSTMENT
-              },
-              map: map,
-              title: 'Blue Collar Beatdown',
-              icon: {
-                path: window.google.maps.SymbolPath.CIRCLE,
-                scale: 6,
-                fillColor: '#4CAF50',
-                fillOpacity: 0.9,
-                strokeWeight: 1
+          // Add markers for all routes from routes.js
+          routes.forEach(route => {
+            if (route.coordinates) {
+              // Choose route color based on category
+              let fillColor = '#4CAF50'; // Default green
+              
+              switch(route.category) {
+                case 'Elite':
+                  fillColor = '#FF5722'; // Orange for elite routes
+                  break;
+                case 'Modern Classic':
+                case 'Modern':
+                  fillColor = '#2196F3'; // Blue for modern routes
+                  break;
+                case 'Obscure':
+                  fillColor = '#9C27B0'; // Purple for obscure routes
+                  break;
+                case 'Classic':
+                default:
+                  fillColor = '#4CAF50'; // Green for classics
               }
-            });
-          }
-          
-          if (southwestRidgeCoords) {
-            new window.google.maps.Marker({
-              position: {
-                lat: southwestRidgeCoords.summit.lat,
-                lng: southwestRidgeCoords.summit.lng + LONGITUDE_ADJUSTMENT
-              },
-              map: map,
-              title: 'Southwest Ridge',
-              icon: {
-                path: window.google.maps.SymbolPath.CIRCLE,
-                scale: 6,
-                fillColor: '#4CAF50',
-                fillOpacity: 0.9,
-                strokeWeight: 1
-              }
-            });
-          }
+              
+              new window.google.maps.Marker({
+                position: {
+                  lat: route.coordinates.lat,
+                  lng: route.coordinates.lng + LONGITUDE_ADJUSTMENT
+                },
+                map: map,
+                title: `${route.name} (${route.peak})`,
+                icon: {
+                  path: window.google.maps.SymbolPath.CIRCLE,
+                  scale: 6,
+                  fillColor: fillColor,
+                  fillOpacity: 0.9,
+                  strokeWeight: 1
+                }
+              });
+            }
+          });
           
           console.log("Map initialized successfully");
           setIsLoading(false);
