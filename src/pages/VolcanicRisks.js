@@ -149,7 +149,7 @@ const VolcanicRisks = () => {
       
       <Alert 
         severity="warning" 
-        sx={{ mb: 3 }}
+        sx={{ mb: 2 }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
           <Box>
@@ -161,19 +161,136 @@ const VolcanicRisks = () => {
           <Box>
             <Button 
               variant="contained"
-              color="warning" 
               size="small" 
               component="a"
               href="https://avo.alaska.edu/" 
               target="_blank"
               rel="noopener noreferrer"
-              sx={{ ml: 2, color: 'white', fontWeight: 'bold' }}
+              sx={{ 
+                ml: 2, 
+                bgcolor: '#FFFF00', 
+                color: '#000000', 
+                fontWeight: 'bold',
+                '&:hover': {
+                  bgcolor: '#E6E600',
+                }
+              }}
             >
               CHECK AVO STATUS
             </Button>
           </Box>
         </Box>
       </Alert>
+      
+      <Paper sx={{ mb: 2, p: 2 }}>
+        <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+          Alaska Volcano Observatory (AVO) Alert Levels
+        </Typography>
+        <Grid container spacing={2} sx={{ mb: 1 }}>
+          <Grid item xs={12} sm={6} md={4} lg={2.4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Box 
+                component="span" 
+                sx={{ 
+                  width: 0,
+                  height: 0,
+                  borderLeft: '10px solid transparent',
+                  borderRight: '10px solid transparent',
+                  borderBottom: '18px solid #FF0000',
+                  mr: 1 
+                }} 
+              />
+              <Typography variant="body2" fontWeight="bold" color="error.main">RED (WARNING)</Typography>
+            </Box>
+            <Typography variant="caption" display="block" sx={{ ml: 4 }}>
+              Eruption is imminent with significant emission of volcanic ash into the atmosphere likely OR eruption is underway.
+            </Typography>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={4} lg={2.4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Box 
+                component="span" 
+                sx={{ 
+                  width: 0,
+                  height: 0,
+                  borderLeft: '10px solid transparent',
+                  borderRight: '10px solid transparent',
+                  borderBottom: '18px solid #FF8C00',
+                  mr: 1 
+                }} 
+              />
+              <Typography variant="body2" fontWeight="bold" color="warning.main">ORANGE (WATCH)</Typography>
+            </Box>
+            <Typography variant="caption" display="block" sx={{ ml: 4 }}>
+              Volcano is exhibiting heightened unrest with increased likelihood of eruption OR eruption is underway with no or minor ash emission.
+            </Typography>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={4} lg={2.4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Box 
+                component="span" 
+                sx={{ 
+                  width: 0,
+                  height: 0,
+                  borderLeft: '10px solid transparent',
+                  borderRight: '10px solid transparent',
+                  borderBottom: '18px solid #FFFF00',
+                  mr: 1 
+                }} 
+              />
+              <Typography variant="body2" fontWeight="bold" sx={{color: '#B0B000'}}>YELLOW (ADVISORY)</Typography>
+            </Box>
+            <Typography variant="caption" display="block" sx={{ ml: 4 }}>
+              <strong>Current Status:</strong> Volcano is exhibiting signs of elevated unrest above known background level.
+            </Typography>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={4} lg={2.4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Box 
+                component="span" 
+                sx={{ 
+                  width: 0,
+                  height: 0,
+                  borderLeft: '10px solid transparent',
+                  borderRight: '10px solid transparent',
+                  borderBottom: '18px solid #00FF00',
+                  mr: 1 
+                }} 
+              />
+              <Typography variant="body2" fontWeight="bold" color="success.main">GREEN (NORMAL)</Typography>
+            </Box>
+            <Typography variant="caption" display="block" sx={{ ml: 4 }}>
+              Volcano is in typical background, non-eruptive state.
+            </Typography>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={4} lg={2.4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Box 
+                component="span" 
+                sx={{ 
+                  width: 0,
+                  height: 0,
+                  borderLeft: '10px solid transparent',
+                  borderRight: '10px solid transparent',
+                  borderBottom: '18px solid #D3D3D3',
+                  mr: 1 
+                }} 
+              />
+              <Typography variant="body2" fontWeight="bold" color="text.secondary">UNASSIGNED</Typography>
+            </Box>
+            <Typography variant="caption" display="block" sx={{ ml: 4 }}>
+              Volcano is not monitored closely enough to make a determination.
+            </Typography>
+          </Grid>
+        </Grid>
+        <Typography variant="caption" color="text.secondary">
+          Source: Alaska Volcano Observatory (AVO) and USGS Alert System
+        </Typography>
+      </Paper>
       
       <Paper sx={{ mb: 4 }}>
         <Tabs
