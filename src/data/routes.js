@@ -714,6 +714,33 @@ const routes = [
     },
     category: "Classic",
     image: "huntington-frontier.jpg"
+  },
+  
+  // Eye Tooth Routes
+  {
+    id: "west-pillar-dream",
+    name: "West Pillar 'Dream in the Spirit of Mugs'",
+    peak: "Eye Tooth",
+    elevation: 9000,
+    grade: "Alaska Grade V",
+    technicalGrade: "5.10c",
+    verticalGain: 2900,
+    pitches: 18,
+    type: "Alpine Rock",
+    firstAscent: "Early 2000s, Dedicated to Mugs Stump",
+    characteristics: "One of the finest alpine rock climbs in Alaska. This 2900 foot free climb quests up mostly quality rock in an outrageous position. The views of Denali and the surrounding mountains while on route are incredible.",
+    crux: "Several technical 5.10 pitches with a crux on pitch 10",
+    trafficLevel: "Low to Moderate - A sought-after objective for skilled alpine rock climbers",
+    landingZone: "Ruth Glacier",
+    approach: "Fly to Ruth Glacier, approach across glacier to the west face of Eye Tooth",
+    conditionWindow: "Late April to early June - Requires dry conditions on the upper pillar",
+    notes: "Provides a feel of being on El Cap with granite soaring out every direction for thousands of feet. While this climb contains only a few difficult pitches, the easier climbing is often runout and wet. Pitches 13-16 are very loose but other than that, the rock is great. The summit ridge is frequently covered in snow. Rap the route to descend. Topo available at Talkeetna Ranger station and in 'Alaska Climbing' by Joseph Puryear.",
+    coordinates: {
+      lat: 62.9438,
+      lng: -150.2395
+    },
+    category: "Elite",
+    image: "eye-tooth-west-pillar.jpg"
   }
 ];
 
