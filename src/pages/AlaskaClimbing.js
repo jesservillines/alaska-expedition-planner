@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Paper, CircularProgress } from '@mui/material';
+import { Box, Typography, Paper, CircularProgress, useMediaQuery, useTheme } from '@mui/material';
 
 function AlaskaClimbing() {
-  // We'll use an iframe approach instead of react-pdf which has compatibility issues
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Determine the absolute URL for the PDF
+  const siteUrl = window.location.origin;
+  const pdfUrl = `${siteUrl}/alaskaeb.pdf`;
+  
+  // Create Google Docs viewer URL for better mobile compatibility
+  const googleDocsViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
   
   useEffect(() => {
     // Set a timeout to stop showing the loading indicator after a certain period
     const timeout = setTimeout(() => {
       setIsLoading(false);
-    }, 3000); // 3 seconds should be enough for most PDFs to start loading
+    }, 5000); // 5 seconds should be enough for most PDFs to start loading
     
     return () => clearTimeout(timeout);
   }, []);
@@ -59,12 +67,13 @@ function AlaskaClimbing() {
           </Box>
         ) : (
           <iframe
-            src="/alaskaeb.pdf"
+            src={isMobile ? googleDocsViewerUrl : "/alaskaeb.pdf"}
             title="Alaska Climbing Guide"
             width="100%"
             height="100%"
             style={{ border: 'none' }}
             onError={() => setError({ message: 'Failed to load PDF' })}
+            allowFullScreen
           />
         )}
       </Box>
