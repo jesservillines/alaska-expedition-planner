@@ -150,22 +150,29 @@ const VolcanicRisks = () => {
       <Alert 
         severity="warning" 
         sx={{ mb: 3 }}
-        action={
-          <Button 
-            color="inherit" 
-            size="small" 
-            href="https://avo.alaska.edu/" 
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            CHECK AVO STATUS
-          </Button>
-        }
       >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <Box>
         <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
           Current Alert Level: ADVISORY (Aviation Color Code: YELLOW)
         </Typography>
         Mount Spurr is showing signs of elevated unrest as of April 2025. Officials warn an eruption is likely in the coming weeks or months.
+          </Box>
+          <Box>
+            <Button 
+              variant="contained"
+              color="warning" 
+              size="small" 
+              component="a"
+              href="https://avo.alaska.edu/" 
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{ ml: 2, color: 'white', fontWeight: 'bold' }}
+            >
+              CHECK AVO STATUS
+            </Button>
+          </Box>
+        </Box>
       </Alert>
       
       <Paper sx={{ mb: 4 }}>
